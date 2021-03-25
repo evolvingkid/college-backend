@@ -1,0 +1,6 @@
+{
+    "mongoURI": "mongodb+srv://admin:this_is_our_insane_project@cluster0.ycc4w.mongodb.net/college?retryWrites=true&w=majority",
+    "emailServices": "gmail",
+    "emailID":"evolvingkd@gmail.com",
+    "emailPassword": "i_love_faker2"
+}
