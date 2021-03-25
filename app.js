@@ -28,7 +28,7 @@ const userRoutes = require('./routes/user');
 const programRoutes = require('./routes/program');
 const examHallRoutes = require('./routes/examhall');
 
-app.get('/api', (req, res) => res.send('College API Running'));
+app.get('/', (req, res) => res.send('College API Running'));
 app.use('/api/auth', authRoutes);
 app.use('/api/department', departmentRoutes);
 app.use('/api/user', userRoutes);
