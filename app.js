@@ -36,4 +36,6 @@ app.use('/api/program', programRoutes);
 app.use('/api/examhall', examHallRoutes);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server starts on  ${PORT}`));
+let server  =app.listen(PORT, () => console.log(`Server starts on  ${PORT}`));
+
+module.exports = server;
