@@ -1,6 +1,7 @@
 exports.examhallReq = async (req, res, next) => {
     req.check('name', 'Name is required').notEmpty();
     req.check('maxcount', 'maxcount is required').notEmpty();
+    req.check('usedcount', 'usedcount is required').notEmpty();
 
     const errors = req.validationErrors();
     if (errors) {

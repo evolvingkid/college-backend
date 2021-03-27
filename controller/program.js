@@ -41,7 +41,7 @@ exports.listProgram = async (req, res) => {
 
     try {
 
-        const programData = await Program.find();
+        const programData = await Program.find().populate('departmentID');
 
         // TODO: removed before hosting
         const used = process.memoryUsage().heapUsed / 1024 / 1024;
@@ -52,6 +52,8 @@ exports.listProgram = async (req, res) => {
         })
 
     } catch (error) {
+
+        console.log(error);
 
         return res.status(500).json({
             status: false,

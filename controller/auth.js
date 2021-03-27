@@ -53,7 +53,7 @@ exports.signin = async (req, res) => {
             bcrypt.compare(req.body.password, userData.password, function (err, result) {
 
                 if (!result) {
-                    return res.status(403).json({ errors: 'User credentials is wrong' });
+                    return res.status(403).json({ msg: 'User credentials is wrong' });
                 }
 
                 // * for JWT token
