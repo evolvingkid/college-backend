@@ -19,12 +19,12 @@ describe('GET /api/user', () => {
 
     });
 
-    it('normal user list', (done) => {
+    it('user list auth token', (done) => {
 
         request(app).get('/api/user').send().end((err, res) => {
 
             expect(res.status).to.equal(401);
-            expect(res.body).to.contain.property('data');
+            expect(res.body).to.contain.property('msg');
             done();
 
         })
