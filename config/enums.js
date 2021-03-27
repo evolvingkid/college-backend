@@ -1,1 +1,7 @@
-exports.mainUserEnums = {admin: 'admin', department: 'department', course : 'course', examHall : 'examhall'};
+exports.mainUserEnums = {
+    admin: 'admin',
+    department: 'department',
+    course: 'course',
+    examHall: 'examhall', 
+    course: 'course',
+};

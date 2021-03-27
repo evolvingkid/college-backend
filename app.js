@@ -27,6 +27,7 @@ const departmentRoutes = require('./routes/department');
 const userRoutes = require('./routes/user');
 const programRoutes = require('./routes/program');
 const examHallRoutes = require('./routes/examhall');
+const courseRoutes = require('./routes/course');
 
 app.get('/', (req, res) => res.send('College API Running'));
 app.use('/api/auth', authRoutes);
@@ -34,6 +35,7 @@ app.use('/api/department', departmentRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/program', programRoutes);
 app.use('/api/examhall', examHallRoutes);
+app.use('/api/course', courseRoutes);
 
 const PORT = process.env.PORT || 4000;
 let server  =app.listen(PORT, () => console.log(`Server starts on  ${PORT}`));
