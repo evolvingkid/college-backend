@@ -82,7 +82,7 @@ exports.courseDelete = async (req, res) => {
         await CourseModel.deleteOne({ _id: courseID });
 
         return res.json({
-            status: false,
+            status: true,
             msg: "Course is Deleted",
         });
 
@@ -91,6 +91,16 @@ exports.courseDelete = async (req, res) => {
         return res.status(500).json({ status: false, msg: "Error Occured" });
 
     }
+}
+
+exports.AddExamDate = async (req, res) => {
+
+    const { examDate } = req.body;
+    const courseID = req.course._id;
+    const dataBase = { examdates: examDate };
+    await CourseModel.updateOne({ _id: courseID }, { $push: dataBase });
+
+    return res.json({ msg: "new Exam Date Added" });
 }
 
 

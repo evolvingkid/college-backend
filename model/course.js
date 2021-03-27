@@ -8,7 +8,7 @@ const CourseModel = new mongoose.Schema({
     program: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "PrograModel" },
     startingyear: { type: Number, required: true },
     isvalid: { type: Boolean },
-    examdates: [{ type: Number }],
+    examdates: [{ type: String }],
 });
 
 CourseModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });
