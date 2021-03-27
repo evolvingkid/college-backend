@@ -2,6 +2,7 @@ exports.mainUserEnums = {
     admin: 'admin',
     department: 'department',
     course: 'course',
-    examHall: 'examhall', 
+    examHall: 'examhall',
     course: 'course',
+    student: 'student',
 };
