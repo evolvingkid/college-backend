@@ -59,6 +59,22 @@ exports.courseList = async (req, res) => {
 
 }
 
+exports.courseEdit = async (req, res) => {
+
+    try {
+        let databaseEdit = req.body;
+        const courseID = req.course._id;
+        await CourseModel.updateOne({ _id: courseID }, { $set: databaseEdit });
+
+        return res.json({ msg: "Course Updated" });
+    } catch (error) {
+
+        return res.json({ status: false, msg: "Error Occured" });
+
+    }
+
+}
+
 exports.courseDelete = async (req, res) => {
 
     try {
