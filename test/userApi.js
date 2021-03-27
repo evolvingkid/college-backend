@@ -9,9 +9,21 @@ describe('GET /api/user', () => {
 
     it('normal user list', (done) => {
 
-        request(app).get('/api/user').send().end((err, res) => {
+        request(app).get('/api/user').auth(accessToken, { type: 'bearer' }).send().end((err, res) => {
 
             expect(res.status).to.equal(200);
+            expect(res.body).to.contain.property('data');
+            done();
+
+        })
+
+    });
+
+    it('normal user list', (done) => {
+
+        request(app).get('/api/user').send().end((err, res) => {
+
+            expect(res.status).to.equal(401);
             expect(res.body).to.contain.property('data');
             done();
 
