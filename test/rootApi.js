@@ -1,7 +1,6 @@
 const request = require('supertest');
 let chai = require('chai');
 const app = require('../app');
-let should = chai.should();
 
 
 describe('GET /', () => {
@@ -21,6 +20,8 @@ describe('GET /', () => {
 
             done();
         });
-    })
+    });
+
+    
 });
 
