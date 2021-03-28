@@ -1,5 +1,6 @@
 const User = require('../model/user');
 const { mainUserEnums } = require('../config/enums')
+const bcrypt = require('bcrypt');
 
 exports.listUsers = async (req, res) => {
 
@@ -35,6 +36,41 @@ exports.deleteUser = async (req, res) => {
         });
 
     }
+}
+
+exports.userPasswordChange = async (req, res) => {
+
+    try {
+
+        const userData = req.user;
+        const { currentPassword, newPassword } = req.body;
+
+        bcrypt.compare(currentPassword, userData.password, async function (err, result) {
+
+            if (!result) {
+                return res.status(403).json({ msg: 'User password is wrong' });
+            }
+
+            bcrypt.hash(newPassword, 10, async function (err, hash) {
+
+                await User.updateOne({ _id: userData._id }, { password: hash });
+
+                return res.json({ msg: "User Password change" });
+
+            });
+
+
+
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            msg: "Error Occured"
+        });
+    }
+
 }
 
 exports.userByID = async (req, res, next, id) => {
