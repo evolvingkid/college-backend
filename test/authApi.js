@@ -1,10 +1,25 @@
-const request = require('supertest');
-const app = require('../app');
-const expect = require('chai').expect;
 const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZheWV6bW9oYW1tZWQyM0BnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRwQVkyNDFNemxRWGw0aGVZM05HLmllMFk5TU5aclpvYzlPOWU2Uy9hL3RzejJtQU5FbzVzaSIsImlhdCI6MTYxNjI0NTgxMn0.U0T7FFEMPm0Y7NY6eBKlrXUc5tA_QrhKS9SkKqhzydU';
+
+
+const request = require('supertest');
+const app = require('../api');
+const connectDB = require('../config/db');
+const expect = require('chai').expect;
 const { randomNumber } = require('../config/customFunction');
+const mongoose = require('mongoose');
+
 // ? sigin
 describe('POST /api/auth/signin', () => {
+
+    before((done) => {
+        mongoose.set('useNewUrlParser', true);
+        mongoose.set('useFindAndModify', false);
+        mongoose.set('useCreateIndex', true);
+
+        connectDB()
+            .then(() => done())
+            .catch((err) => done(err));
+    });
 
     it('normal siginin', (done) => {
 
