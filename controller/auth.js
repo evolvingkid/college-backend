@@ -19,10 +19,6 @@ exports.signup = async (req, res) => {
 
         await userData.save();
 
-        // TODO: removed before hosting
-        const used = process.memoryUsage().heapUsed / 1024 / 1024;
-        console.log(`signin API : uses approximately ${used} MB`);
-
         return res.status(201).json({
             msg: "user Created",
             data: userData
@@ -59,10 +55,6 @@ exports.signin = async (req, res) => {
                 // * for JWT token
                 const username = { email: userData['email'], password: userData['password'] };
                 const acessToken = jwt.sign(username, process.env.ACESS_TOKEN_SECRET);
-
-                // TODO: removed before hosting
-                const used = process.memoryUsage().heapUsed / 1024 / 1024;
-                console.log(`signup API : uses approximately ${used} MB`);
 
                 return res.json({
                     sucess: true,
@@ -116,10 +108,6 @@ exports.jwtAuthVerification = async (req, res, next) => {
         });
 
         req.user = userData;
-
-        // TODO: removed before hosting
-        const used = process.memoryUsage().heapUsed / 1024 / 1024;
-        console.log(`JWTAUthVerification API : uses approximately ${used} MB`);
 
         next();
     });

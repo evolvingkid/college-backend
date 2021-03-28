@@ -6,10 +6,6 @@ exports.listUsers = async (req, res) => {
     try {
         const userData = await User.find();
 
-        // TODO: removed before hosting
-        const used = process.memoryUsage().heapUsed / 1024 / 1024;
-        console.log(`listUsers API : uses approximately ${used} MB`);
-
         res.json({
             sucess: true, data: userData
         });
@@ -26,10 +22,6 @@ exports.deleteUser = async (req, res) => {
     try {
 
         await User.deleteOne({ _id: req.userIDData });
-
-        // TODO: removed before hosting
-        const used = process.memoryUsage().heapUsed / 1024 / 1024;
-        console.log(`deleteuser API : uses approximately ${used} MB`);
 
         res.json({
             sucess: true,
@@ -56,10 +48,6 @@ exports.userByID = async (req, res, next, id) => {
 
     req.userIDData = userData;
 
-    // TODO: removed before hosting
-    const used = process.memoryUsage().heapUsed / 1024 / 1024;
-    console.log(`userByID API : uses approximately ${used} MB`);
-
     next();
 
 }
@@ -76,10 +64,6 @@ exports.userPermission = (req, res, next) => {
     if (flag == 0) return res.status(401).json({
         msg: "This is user is not Authorized"
     });
-
-    // TODO: removed before hosting
-    const used = process.memoryUsage().heapUsed / 1024 / 1024;
-    console.log(`userPermission API : uses approximately ${used} MB`);
 
     next();
 }

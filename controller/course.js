@@ -132,10 +132,6 @@ exports.coursePermmison = (req, res, next) => {
     if (flag == 0) return res.status(401).json({
         msg: "This is user is not Authorized"
     });
-
-    // TODO: removed before hosting
-    const used = process.memoryUsage().heapUsed / 1024 / 1024;
-    console.log(`programPermission API : uses approximately ${used} MB`);
-
+    
     next();
 }

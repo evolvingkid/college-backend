@@ -114,10 +114,6 @@ exports.examHallPermission = (req, res, next) => {
         msg: "This is user is not Authorized"
     });
 
-    // TODO: removed before hosting
-    const used = process.memoryUsage().heapUsed / 1024 / 1024;
-    console.log(`examHallPermission API : uses approximately ${used} MB`);
-
     next();
 }
 
@@ -133,10 +129,6 @@ exports.examhallByID = async (req, res, next, id) => {
         });
 
         req.examhall = examHall;
-
-        // TODO: removed before hosting
-        const used = process.memoryUsage().heapUsed / 1024 / 1024;
-        console.log(`examhallByID API : uses approximately ${used} MB`);
 
         next();
 
