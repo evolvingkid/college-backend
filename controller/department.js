@@ -42,7 +42,7 @@ exports.createDepartment = async (req, res) => {
 exports.listDepartment = async (req, res) => {
 
     try {
-        const departmentData = await Department.find();
+        const departmentData = await Department.find().populate("hod");
 
         return res.json({
             data: departmentData
