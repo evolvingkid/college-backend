@@ -91,6 +91,7 @@ exports.jwtAuthVerification = async (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token == null) return res.status(401).json({
+        status: false,
         msg: "This is user is not Authorized"
     });
 
@@ -98,12 +99,14 @@ exports.jwtAuthVerification = async (req, res, next) => {
     jwt.verify(token, process.env.ACESS_TOKEN_SECRET, async (err, username) => {
 
         if (err) return res.status(401).json({
+            status: false,
             msg: "This is user is not Authorized"
         });
 
         const userData = await UserModel.findOne({ email: username.email });
 
         if (!userData) return res.status(401).json({
+            status: false,
             msg: "This is user is not Authorized"
         });
 

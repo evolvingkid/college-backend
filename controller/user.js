@@ -12,6 +12,7 @@ exports.listUsers = async (req, res) => {
         });
     } catch (error) {
         return res.status(500).json({
+            status: false,
             msg: "Error Occured"
         });
 
@@ -74,17 +75,29 @@ exports.userPasswordChange = async (req, res) => {
 }
 
 exports.userByID = async (req, res, next, id) => {
+    try {
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(406).json({ status: false, msg: "This user is not acceptable" });
+          }
 
-    const userData = await User.findOne({ _id: id });
+        const userData = await User.findOne({ _id: id });
 
-    if (!userData) return res.status(403).json({
-        status: false,
-        msg: "User is not found"
-    });
+        if (!userData) return res.status(403).json({
+            status: false,
+            msg: "User is not found"
+        });
 
-    req.userIDData = userData;
+        req.userIDData = userData;
 
-    next();
+        next();
+    } catch (error) {
+        console.log(`userbyID ${error}`);
+
+        return res.status(500).json({ status: false, msg: "Error occured" });
+
+    }
+
+
 
 }
 

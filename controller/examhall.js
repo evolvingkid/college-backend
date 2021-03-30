@@ -122,6 +122,10 @@ exports.examhallByID = async (req, res, next, id) => {
 
     try {
 
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(406).json({ status: false, msg: "This ExamHall is not acceptable" });
+          }
+
         const examHall = await ExamHall.findOne({ _id: id });
 
         if (!examHall) return res.status(401).json({

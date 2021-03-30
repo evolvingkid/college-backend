@@ -107,6 +107,10 @@ exports.AddExamDate = async (req, res) => {
 exports.courseByID = async (req, res, next, id) => {
 
     try {
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(406).json({ status: false, msg: "This Course is not acceptable" });
+        }
+
         const courseData = await CourseModel.findOne({ _id: id });
 
         if (!courseData) return res.status(403).json({ status: false, msg: "Course not found" });

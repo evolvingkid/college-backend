@@ -154,13 +154,23 @@ exports.permissionOnDepartment = (req, res, next) => {
 
 exports.departmentByID = async (req, res, next, id) => {
 
-    const departmentData = await Department.findOne({ _id: id });
+    try {
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(406).json({ status: false, msg: "This Department is not acceptable" });
+        }
 
-    if (!departmentData) return res.status(401).json({
-        msg: "This Department doesn't exist"
-    });
+        const departmentData = await Department.findOne({ _id: id });
 
-    req.department = departmentData;
+        if (!departmentData) return res.status(401).json({
+            msg: "This Department doesn't exist"
+        });
 
-    next();
+        req.department = departmentData;
+
+        next();
+    } catch (error) {
+        return res.status(500).json({ status: false, msg: "Error occured" });
+    }
+
+
 }

@@ -75,6 +75,9 @@ exports.programdelete = async (req, res) => {
 
 exports.programByID = async (req, res, next, id) => {
     try {
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(406).json({ status: false, msg: "This program is not acceptable" });
+          }
 
         const programData = await Program.findOne({ _id: id });
 
