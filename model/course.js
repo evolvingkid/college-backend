@@ -3,12 +3,55 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 
 const CourseModel = new mongoose.Schema({
-    courseid: { type: String, required: true, unique: true },
-    name: { type: String, required: true, unique: true },
-    program: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "PrograModel" },
-    startingyear: { type: Number, required: true },
-    isvalid: { type: Boolean },
-    examdates: [{ type: String }],
+    courseid: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    program: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "PrograModel"
+    },
+    startingyear: {
+        type: Number,
+        required: true
+    },
+    isvalid: {
+        type: Boolean
+    },
+    examdates: [
+        { type: Date }
+    ],
+    startDate: {
+        type: Date,
+        required: true
+    },
+    endDate: {
+        type: Date
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    sem: {
+        type: Number,
+        required: true
+    },
+    syllabus: {
+        type: String
+    },
+    teacher: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user"
+        }
+    ]
 });
 
 CourseModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });

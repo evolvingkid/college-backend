@@ -2,14 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 const { jwtAuthVerification } = require('../controller/auth');
-const { coursePermmison, createCourse, courseList, courseByID, courseDelete, courseEdit, AddExamDate } = require('../controller/course');
+const {  createCourse, courseList, courseByID, courseDelete, courseEdit, AddExamDate } = require('../controller/course');
 const { courseReq } = require('../validation/course');
+const { courseManagePermission, courseReadPermission } = require('../auth/course');
 
-router.post('/', jwtAuthVerification, courseReq, coursePermmison, createCourse);
-router.get('/', jwtAuthVerification, courseList);
-router.delete('/:courseByID', jwtAuthVerification, coursePermmison, courseDelete);
-router.patch('/:courseByID', jwtAuthVerification, coursePermmison, courseEdit);
-router.patch('/examdate/:courseByID', jwtAuthVerification, coursePermmison, AddExamDate);
+router.post('/', jwtAuthVerification, courseReq, courseManagePermission, createCourse);
+router.get('/', jwtAuthVerification, courseReadPermission, courseList);
+router.delete('/:courseByID', jwtAuthVerification, courseManagePermission, courseDelete);
+router.patch('/:courseByID', jwtAuthVerification, courseManagePermission, courseEdit);
+router.patch('/examdate/:courseByID', jwtAuthVerification, courseManagePermission, AddExamDate);
 
 router.param('courseByID', courseByID);
 

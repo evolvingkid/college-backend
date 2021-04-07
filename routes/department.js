@@ -7,12 +7,13 @@ const { permissionOnDepartment, createDepartment,
     listDepartment, departmentByID,
     editDepartment, departmentDelete } = require('../controller/department')
 const { departmentReq } = require('../validation/department');
+const { departmentManagePermission, departmentReadPermission } = require('../auth/department');
 
 
-router.post('/', departmentReq, jwtAuthVerification, permissionOnDepartment, createDepartment);
+router.post('/', departmentReq, jwtAuthVerification, departmentManagePermission, createDepartment);
 router.get('/', jwtAuthVerification, listDepartment);
-router.patch('/:departmentByID', jwtAuthVerification, editDepartment);
-router.delete('/:departmentByID', jwtAuthVerification, departmentDelete);
+router.patch('/:departmentByID', jwtAuthVerification, departmentManagePermission, editDepartment);
+router.delete('/:departmentByID', jwtAuthVerification, departmentManagePermission, departmentDelete);
 
 router.param('departmentByID', departmentByID)
 

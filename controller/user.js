@@ -1,29 +1,37 @@
 const User = require('../model/user');
 const { mainUserEnums } = require('../config/enums')
 const bcrypt = require('bcrypt');
+const Student = require('../model/student');
 
 exports.listUsers = async (req, res) => {
 
     try {
-        const userData = await User.find();
+        const userData = await User.find()
+        .populate('student').populate('employee');
+        
+        for (let index = 0; index < userData.length; index++) {
+            userData[index].hashed_password = undefined;
+            userData[index].salt = undefined;
+        }
 
         res.json({
             sucess: true, data: userData
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             status: false,
-            msg: "Error Occured"
+            error: "Error Occured"
         });
-
     }
 }
 
 exports.deleteUser = async (req, res) => {
 
     try {
-
-        await User.deleteOne({ _id: req.userIDData });
+        const userData = req.userIDData;
+        await Promise.all([Student.deleteOne({_id : userData.student})
+            , User.deleteOne({ _id: userData._id })]);
 
         res.json({
             sucess: true,
@@ -33,7 +41,7 @@ exports.deleteUser = async (req, res) => {
     } catch (error) {
 
         return res.status(500).json({
-            msg: "Error Occured"
+            error: "Error Occured"
         });
 
     }
@@ -68,7 +76,7 @@ exports.userPasswordChange = async (req, res) => {
         console.log(error);
 
         return res.status(500).json({
-            msg: "Error Occured"
+            error: "Error Occured"
         });
     }
 
@@ -77,14 +85,14 @@ exports.userPasswordChange = async (req, res) => {
 exports.userByID = async (req, res, next, id) => {
     try {
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(406).json({ status: false, msg: "This user is not acceptable" });
-          }
+            return res.status(406).json({ status: false, error: "This user is not acceptable" });
+        }
 
         const userData = await User.findOne({ _id: id });
 
         if (!userData) return res.status(403).json({
             status: false,
-            msg: "User is not found"
+            error: "User is not found"
         });
 
         req.userIDData = userData;
@@ -93,7 +101,7 @@ exports.userByID = async (req, res, next, id) => {
     } catch (error) {
         console.log(`userbyID ${error}`);
 
-        return res.status(500).json({ status: false, msg: "Error occured" });
+        return res.status(500).json({ status: false, error: "Error occured" });
 
     }
 

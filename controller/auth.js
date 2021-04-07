@@ -40,13 +40,13 @@ exports.signup = async (req, res) => {
 
         if (errorMsg.length) {
             return res.status(403).json({
-                msg: errorMsg[0],
-                error: errorMsg
+                error: errorMsg[0],
+                errorMsgs: errorMsg
             });
         }
 
         return res.status(500).json({
-            msg: "Error Occured"
+            error: "Error Occured"
         });
 
     }
@@ -59,11 +59,11 @@ exports.signin = async (req, res) => {
 
         let userData = await  UserModel
             .findOne({ email: email })
-            .populate({path: "student"});
+            .populate({path: "student"}).populate('employee');
 
         if (!userData) {
             return res.status(400).json({
-                err: "User not found"
+                error: "User not found"
             });
         }
 
@@ -73,7 +73,7 @@ exports.signin = async (req, res) => {
             });
         }
 
-        const username = { email: userData.email, password: userData.hashed_password };
+        const username = { email: userData.email, password: password };
         const acessToken = jwt.sign(username, process.env.ACESS_TOKEN_SECRET);
 
         userData.hashed_password = undefined;
@@ -92,7 +92,7 @@ exports.signin = async (req, res) => {
     } catch (error) {
 
         return res.status(500).json({
-            msg: "Error Occured"
+            error: "Error Occured"
         });
 
     }
@@ -109,7 +109,7 @@ exports.jwtAuthVerification = async (req, res, next) => {
 
     if (token == null) return res.status(401).json({
         status: false,
-        msg: "This is user is not Authorized"
+        error: "This is user is not Authorized"
     });
 
 
@@ -117,17 +117,21 @@ exports.jwtAuthVerification = async (req, res, next) => {
 
         if (err) return res.status(401).json({
             status: false,
-            msg: "This is user is not Authorized"
+            error: "This is user is not Authorized"
         });
 
         const userData = await UserModel.findOne({ email: username.email });
 
-        console.log(userData);
-
         if (!userData) return res.status(401).json({
             status: false,
-            msg: "This is user is not Authorized"
+            error: "This is user is not Authorized"
         });
+
+        if (!userData.authenticate(username.password)) {
+            return res.status(401).json({
+                error: "Email and Password dont match"
+            });
+        }
 
         req.user = userData;
 
