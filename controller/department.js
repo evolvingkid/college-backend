@@ -10,14 +10,12 @@ exports.createDepartment = async (req, res) => {
 
 
     try {
-        const departmentData = await Department({
-            name: req.body.name,
-            hod: req.body.hod
-        });
+        const body = req.body;
+        const departmentData = await Department(body);
 
         await departmentData.save();
 
-        return res.status(201).json({
+        return res.status(200).json({
             msg: "Department Created",
             data: departmentData
         });
@@ -25,13 +23,13 @@ exports.createDepartment = async (req, res) => {
 
         if (error.errors.name) {
             return res.status(403).json({
-                msg: error.errors.name.properties.message
+                error: error.errors.name.properties.message
             });
         }
 
         return res.status(500).json({
             status: false,
-            msg: "Error Occured",
+            error: "Error Occured",
         });
 
     }
@@ -42,7 +40,12 @@ exports.createDepartment = async (req, res) => {
 exports.listDepartment = async (req, res) => {
 
     try {
-        const departmentData = await Department.find().populate("hod");
+        const departmentData = await Department.find().populate({
+            path: "hods.hod",
+            populate : {
+                path: "employee"
+            }
+        });
 
         return res.json({
             data: departmentData
@@ -60,15 +63,7 @@ exports.listDepartment = async (req, res) => {
 exports.editDepartment = async (req, res) => {
 
     try {
-        let dataBaseBody = {};
-
-        if (req.body.name) {
-            dataBaseBody['name'] = req.body.name;
-        }
-
-        if (req.body.hod) {
-            dataBaseBody['hod'] = req.body.hod;
-        }
+        let dataBaseBody = req.body;
 
         await Department.updateOne({ _id: req.department._id },
             { $set: dataBaseBody });
@@ -81,7 +76,7 @@ exports.editDepartment = async (req, res) => {
 
         return res.status(500).json({
             status: false,
-            msg: "Error Occured",
+            error: "Error Occured",
         });
     }
 }
@@ -134,22 +129,6 @@ exports.departmentDelete = async (req, res) => {
         });
 
     }
-}
-
-exports.permissionOnDepartment = (req, res, next) => {
-
-    let flag = 0;
-    req.user.priviliage.forEach(element => {
-        if (element == mainUserEnums.admin || element == mainUserEnums.department) {
-            flag++;
-        }
-    });
-
-    if (flag == 0) return res.status(401).json({
-        msg: "This is user is not Authorized"
-    });
-
-    next();
 }
 
 exports.departmentByID = async (req, res, next, id) => {

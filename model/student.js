@@ -22,12 +22,16 @@ const StudentModel = new mongoose.Schema({
     },
     isNRI: {
         type: Boolean,
-        default : false,
+        default: false,
     },
     achivement: [],
     placement: [],
     club: [],
-    education: [],
+    education: [{
+        title: { type: String },
+        file: { type: String },
+        decription: { type: String }
+    }],
 }, {
     timestamps: true
 });
