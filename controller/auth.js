@@ -1,18 +1,33 @@
 require('dotenv').config();
-
 const UserModel = require('../model/user');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const  { mongoDB } = require('../error/mongoDB');
+const { mongoDB } = require('../error/mongoDB');
+const student = require('../model/student');
+const Employee = require('../model/employee');
+const user = require('../model/user');
 
 //! base  API
 exports.signup = async (req, res) => {
 
     try {
-        const body = req.body;
-        let userData = new UserModel(body);
+        let body = req.body;
+        let userData;
+        if (body.userType === 'Student') {
+            const studentData = student(body.student);
+            body.student = studentData;
+            userData = new UserModel(body);
+            await Promise.all([studentData.save(), userData.save()]);
+        }
 
-        await userData.save();
+        if (body.userType === 'Employee') {
+            const employee = Employee(body.employee);
+            body.employee = employee;
+            userData = new UserModel(body);
+            await Promise.all([employee.save(), userData.save()]);
+        }
+
+        userData.salt = undefined;
+        userData.hashed_password = undefined;
 
         return res.status(201).json({
             msg: "user Created",
@@ -25,7 +40,7 @@ exports.signup = async (req, res) => {
 
         if (errorMsg.length) {
             return res.status(403).json({
-                msg : errorMsg[0],
+                msg: errorMsg[0],
                 error: errorMsg
             });
         }
@@ -40,38 +55,43 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
     try {
 
-        let userData = await UserModel.findOne({ email: req.body.email });
+        const { email, password } = req.body;
 
-        if (userData) {
-            bcrypt.compare(req.body.password, userData.password, function (err, result) {
+        let userData = await (await UserModel
+            .findOne({ email: email }))
+            .populate({path: "student"});
 
-                if (!result) {
-                    return res.status(403).json({ msg: 'User credentials is wrong' });
-                }
-
-                // * for JWT token
-                const username = { email: userData['email'], password: userData['password'] };
-                const acessToken = jwt.sign(username, process.env.ACESS_TOKEN_SECRET);
-
-                return res.json({
-                    sucess: true,
-                    data:
-                    {
-                        user: userData,
-                        acesstoken: acessToken
-                    }
-                });
-
-            });
-        }else{
-            return res.status(401).json({
-                msg: "User not found"
+        if (!userData) {
+            return res.status(400).json({
+                err: "User not found"
             });
         }
 
+        if (!userData.authenticate(password)) {
+            return res.status(401).json({
+                error: "Email and Password dont match"
+            });
+        }
+
+        const username = { email: userData.email, password: userData.hashed_password };
+        const acessToken = jwt.sign(username, process.env.ACESS_TOKEN_SECRET);
+
+        userData.hashed_password = undefined;
+        userData.salt = undefined;
+
+        return res.json({
+            sucess: true,
+            data:
+            {
+                acesstoken: acessToken,
+                user: userData
+            }
+        });
+
+
     } catch (error) {
 
-        return res.status(403).json({
+        return res.status(500).json({
             msg: "Error Occured"
         });
 

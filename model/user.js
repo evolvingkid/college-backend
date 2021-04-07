@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     unique: 100
   },
   phone: {
-    type: String,
+    type: Number,
     trim: true,
     required: true,
     unique: 13
@@ -118,6 +118,12 @@ const userSchema = new mongoose.Schema({
   },
   adharprofilePic: {
     type: String,
+  },
+  student: {
+    type: mongoose.Schema.Types.ObjectId,  ref: "student"
+  },
+  employee : {
+    type: mongoose.Schema.Types.ObjectId,  ref: "employee"
   }
 }, {
   timestamps: true
@@ -154,6 +160,8 @@ userSchema.methods = {
   }
 };
 
+
 userSchema.plugin(uniqueValidator, { message: '{PATH} already exists!' });
 
-module.exports = mongoose.model("User", userSchema);
+
+module.exports = mongoose.model("user", userSchema);

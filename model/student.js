@@ -2,17 +2,36 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const StudentModel = new mongoose.Schema({
-    name: { type: String, required: true },
-    rollnumber: { type: Number, required: true },
-    regNumber: { type: Number },
-    phoneNumber: { type: Number },
-    program: { type: mongoose.Schema.Types.ObjectId, ref: "PrograModel" },
-    password: { type: String },
-    email: { type: String },
-    supplimentaryExam: [{ type: mongoose.Schema.Types.ObjectId, ref: "courseModel" }],
-    examyear: { type: Number },
+    fatherName: { type: String, required: true },
+    motherName: { type: String, required: true },
+    income: { type: Number },
+    caste: { type: String },
+    religion: { type: String },
+    castecatgory: {
+        type: String,
+        enum: ['General', 'OBC', 'SC/ST'],
+        default: 'General',
+    },
+    rollno: { type: Number, required: true },
+    collegeRollno: { type: Number, required: true },
+    universityNumber: { type: Number, required: true },
+    fatherOccupation: { type: String },
+    motheroccupation: { type: String },
+    addmissionType: {
+        type: String
+    },
+    isNRI: {
+        type: Boolean,
+        default : false,
+    },
+    achivement: [],
+    placement: [],
+    club: [],
+    education: [],
+}, {
+    timestamps: true
 });
 
 StudentModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });
 
-module.exports = Program = mongoose.model('studentModel', StudentModel);
+module.exports = Program = mongoose.model('student', StudentModel, 'student');
