@@ -63,6 +63,10 @@ exports.deleteStudent = async (req, res) => {
 
 exports.studentByID = async (req, res, next, id) => {
     try {
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(406).json({ status: false, msg: "This student is not acceptable" });
+          }
+
         const studentData = await Student.findOne({ _id: id });
 
         if (!studentData) return res.status(401).json({
@@ -89,10 +93,6 @@ exports.studentPermission = async (req, res, next) => {
     if (flag == 0) return res.status(401).json({
         msg: "This is user is not Authorized"
     });
-
-    // TODO: removed before hosting
-    const used = process.memoryUsage().heapUsed / 1024 / 1024;
-    console.log(`programPermission API : uses approximately ${used} MB`);
 
     next();
 }

@@ -107,6 +107,10 @@ exports.AddExamDate = async (req, res) => {
 exports.courseByID = async (req, res, next, id) => {
 
     try {
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(406).json({ status: false, msg: "This Course is not acceptable" });
+        }
+
         const courseData = await CourseModel.findOne({ _id: id });
 
         if (!courseData) return res.status(403).json({ status: false, msg: "Course not found" });
@@ -132,10 +136,6 @@ exports.coursePermmison = (req, res, next) => {
     if (flag == 0) return res.status(401).json({
         msg: "This is user is not Authorized"
     });
-
-    // TODO: removed before hosting
-    const used = process.memoryUsage().heapUsed / 1024 / 1024;
-    console.log(`programPermission API : uses approximately ${used} MB`);
-
+    
     next();
 }

@@ -114,10 +114,6 @@ exports.examHallPermission = (req, res, next) => {
         msg: "This is user is not Authorized"
     });
 
-    // TODO: removed before hosting
-    const used = process.memoryUsage().heapUsed / 1024 / 1024;
-    console.log(`examHallPermission API : uses approximately ${used} MB`);
-
     next();
 }
 
@@ -126,6 +122,10 @@ exports.examhallByID = async (req, res, next, id) => {
 
     try {
 
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(406).json({ status: false, msg: "This ExamHall is not acceptable" });
+          }
+
         const examHall = await ExamHall.findOne({ _id: id });
 
         if (!examHall) return res.status(401).json({
@@ -133,10 +133,6 @@ exports.examhallByID = async (req, res, next, id) => {
         });
 
         req.examhall = examHall;
-
-        // TODO: removed before hosting
-        const used = process.memoryUsage().heapUsed / 1024 / 1024;
-        console.log(`examhallByID API : uses approximately ${used} MB`);
 
         next();
 

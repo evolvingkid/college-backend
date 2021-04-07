@@ -3,7 +3,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const DepartmentModel = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
-    hod: { type: String },
+    hod: { type: mongoose.Schema.Types.ObjectId, requird: true, ref: "UsersModel" },
 });
 
 DepartmentModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });
