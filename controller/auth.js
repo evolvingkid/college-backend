@@ -3,19 +3,14 @@ require('dotenv').config();
 const UserModel = require('../model/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+const  { mongoDB } = require('../error/mongoDB');
 
 //! base  API
 exports.signup = async (req, res) => {
 
     try {
-        let userData = new UserModel({
-            name: req.body.name,
-            password: req.body.password,
-            email: req.body.email,
-            designation: req.body.designation,
-            priviliage: req.body.priviliage
-        });
+        const body = req.body;
+        let userData = new UserModel(body);
 
         await userData.save();
 
@@ -26,18 +21,20 @@ exports.signup = async (req, res) => {
 
     } catch (error) {
 
-        if (error.errors.email) {
+        const errorMsg = mongoDB(error);
+
+        if (errorMsg.length) {
             return res.status(403).json({
-                msg: error.errors.email.properties.message
+                msg : errorMsg[0],
+                error: errorMsg
             });
         }
 
-        return res.status(403).json({
+        return res.status(500).json({
             msg: "Error Occured"
         });
 
     }
-
 }
 
 exports.signin = async (req, res) => {
@@ -104,6 +101,8 @@ exports.jwtAuthVerification = async (req, res, next) => {
         });
 
         const userData = await UserModel.findOne({ email: username.email });
+
+        console.log(userData);
 
         if (!userData) return res.status(401).json({
             status: false,
