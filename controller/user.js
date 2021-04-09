@@ -7,14 +7,14 @@ exports.listUsers = async (req, res) => {
 
     try {
         const userData = await User.find()
-        .populate('student').populate('employee');
-        
+            .populate('student').populate('employee');
+
         for (let index = 0; index < userData.length; index++) {
             userData[index].hashed_password = undefined;
             userData[index].salt = undefined;
         }
 
-        res.json({
+        return res.json({
             sucess: true, data: userData
         });
     } catch (error) {
@@ -26,11 +26,39 @@ exports.listUsers = async (req, res) => {
     }
 }
 
+exports.listTeachers = async (req, res) => {
+
+    const teacherData = await User
+        .aggregate([
+            {
+                "$lookup": {
+                    "from": 'employees',
+                    "localField": "employee",
+                    "foreignField": "_id",
+                    "as": "employee",
+                }
+            },
+            { "$match": { "employee.type": 'Teachers'} },  
+        ]);
+
+    for (let index = 0; index < teacherData.length; index++) {
+        teacherData[index].hashed_password = undefined;
+        teacherData[index].salt = undefined;
+        teacherData[index].aadhar = undefined;
+    }
+
+    return res.json({
+        sucess: true, data: teacherData
+    });
+
+}
+
+
 exports.deleteUser = async (req, res) => {
 
     try {
         const userData = req.userIDData;
-        await Promise.all([Student.deleteOne({_id : userData.student})
+        await Promise.all([Student.deleteOne({ _id: userData.student })
             , User.deleteOne({ _id: userData._id })]);
 
         res.json({
