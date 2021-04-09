@@ -28,47 +28,84 @@ exports.listUsers = async (req, res) => {
 
 exports.listTeachers = async (req, res) => {
 
-    let { department } = req.query;
+    try {
+        let { department } = req.query;
 
-    let aggregateData = [
-        {
-            "$lookup": {
-                "from": 'employees',
-                "localField": "employee",
-                "foreignField": "_id",
-                "as": "employee",
-            }
-        },
-        { "$match": { "employee.type": 'Teachers' } },
-    ];
-
-    if (department) {
-        console.log("department");
-        aggregateData.push(
+        let aggregateData = [
             {
                 "$lookup": {
-                    "from": 'departmentmodels',
-                    "localField": "employee.department",
+                    "from": 'employees',
+                    "localField": "employee",
                     "foreignField": "_id",
-                    "as": "departmentdata",
+                    "as": "employee",
                 }
+            },
+            { "$match": { "employee.type": 'Teachers' } },
+        ];
+
+        if (department) {
+            console.log("department");
+            aggregateData.push(
+                {
+                    "$lookup": {
+                        "from": 'departmentmodels',
+                        "localField": "employee.department",
+                        "foreignField": "_id",
+                        "as": "departmentdata",
+                    }
+                }
+            );
+            aggregateData.push({ "$match": { "departmentdata.name": "BCAS" } },)
+
+        }
+
+        const teacherData = await User.aggregate(aggregateData);
+
+        for (let index = 0; index < teacherData.length; index++) {
+            teacherData[index].hashed_password = undefined;
+            teacherData[index].salt = undefined;
+            teacherData[index].aadhar = undefined;
+        }
+
+        return res.json({
+            sucess: true, data: teacherData
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            error: "Error Occured"
+        });
+    }
+
+
+
+}
+
+exports.studentList = async (req, res) => {
+
+    let studentData;
+    const { batch } = req.query;
+
+    let aggreateData = [
+        {
+            "$lookup": {
+                "from": 'student',
+                "localField": "student",
+                "foreignField": "_id",
+                "as": "student",
             }
-        );
-        aggregateData.push({ "$match": { "departmentdata.name": "BCAS" } },)
+        },
+        { "$match": { "student": { $exists: true, $not: {$size: 0} } } }
+    ];
 
+    if (batch) {
+        aggreateData.push({ "$match": { "student.batch": parseInt(batch) } });
     }
 
-    const teacherData = await User.aggregate(aggregateData);
+    studentData = await User.aggregate(aggreateData);
 
-    for (let index = 0; index < teacherData.length; index++) {
-        teacherData[index].hashed_password = undefined;
-        teacherData[index].salt = undefined;
-        teacherData[index].aadhar = undefined;
-    }
-
-    return res.json({
-        sucess: true, data: teacherData
-    });
+    return res.json({ data: studentData });
 
 }
 

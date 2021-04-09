@@ -20,6 +20,7 @@ const StudentModel = new mongoose.Schema({
     addmissionType: {
         type: String
     },
+    batch: { type: Number , required : true},
     isNRI: {
         type: Boolean,
         default: false,
