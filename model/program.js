@@ -13,29 +13,35 @@ const ProgramModel = new mongoose.Schema({
         required: true,
         ref: "DepartmentModel"
     },
-    startdate : {
-        type : Date,
+    startdate: {
+        type: Date,
         reqyuired: true,
     },
-    enddate : {
-        type : Date
+    enddate: {
+        type: Date
     },
     isActive: {
         type: Boolean,
-        default : true
+        default: true
     },
-    maxintake : {
+    maxintake: {
         type: Number,
         required: true,
     },
-    duration : {
+    duration: {
         type: Number,
         required: true,
     },
-    isAded : {
-        type : Boolean,
+    isAded: {
+        type: Boolean,
         required: true,
-    }
+    },
+    course: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "courseModel"
+        }
+    ]
 });
 
 ProgramModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });

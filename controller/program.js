@@ -43,8 +43,9 @@ exports.listProgram = async (req, res) => {
             path : "department",
             populate : {
                 path : "hods.hod"
-            }
-        });
+            },
+           // path : "course"
+        }).populate('course');
 
         return res.json({
             data: programData
