@@ -28,18 +28,37 @@ exports.listUsers = async (req, res) => {
 
 exports.listTeachers = async (req, res) => {
 
-    const teacherData = await User
-        .aggregate([
+    let { department } = req.query;
+
+    let aggregateData = [
+        {
+            "$lookup": {
+                "from": 'employees',
+                "localField": "employee",
+                "foreignField": "_id",
+                "as": "employee",
+            }
+        },
+        { "$match": { "employee.type": 'Teachers' } },
+    ];
+
+    if (department) {
+        console.log("department");
+        aggregateData.push(
             {
                 "$lookup": {
-                    "from": 'employees',
-                    "localField": "employee",
+                    "from": 'departmentmodels',
+                    "localField": "employee.department",
                     "foreignField": "_id",
-                    "as": "employee",
+                    "as": "departmentdata",
                 }
-            },
-            { "$match": { "employee.type": 'Teachers'} },  
-        ]);
+            }
+        );
+        aggregateData.push({ "$match": { "departmentdata.name": "BCAS" } },)
+
+    }
+
+    const teacherData = await User.aggregate(aggregateData);
 
     for (let index = 0; index < teacherData.length; index++) {
         teacherData[index].hashed_password = undefined;
