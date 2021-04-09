@@ -4,7 +4,9 @@ const jwt = require('jsonwebtoken');
 const { mongoDB } = require('../error/mongoDB');
 const student = require('../model/student');
 const Employee = require('../model/employee');
-const user = require('../model/user');
+const config = require('config');
+const salt = config.get('salt');
+const bcrypt = require('bcrypt');
 
 //! base  API
 exports.signup = async (req, res) => {
@@ -67,13 +69,15 @@ exports.signin = async (req, res) => {
             });
         }
 
+
         if (!userData.authenticate(password)) {
             return res.status(401).json({
                 error: "Email and Password dont match"
             });
         }
 
-        const username = { email: userData.email, password: password };
+        const username = { id: userData._id};
+
         const acessToken = jwt.sign(username, process.env.ACESS_TOKEN_SECRET);
 
         userData.hashed_password = undefined;
@@ -92,7 +96,7 @@ exports.signin = async (req, res) => {
     } catch (error) {
 
         return res.status(500).json({
-            error: "Error Occured"
+            error: "Autheticate Error"
         });
 
     }
@@ -114,28 +118,28 @@ exports.jwtAuthVerification = async (req, res, next) => {
 
 
     jwt.verify(token, process.env.ACESS_TOKEN_SECRET, async (err, username) => {
-
-        if (err) return res.status(401).json({
-            status: false,
-            error: "This is user is not Authorized"
-        });
-
-        const userData = await UserModel.findOne({ email: username.email });
-
-        if (!userData) return res.status(401).json({
-            status: false,
-            error: "This is user is not Authorized"
-        });
-
-        if (!userData.authenticate(username.password)) {
-            return res.status(401).json({
-                error: "Email and Password dont match"
+        try {
+            if (err) return res.status(401).json({
+                status: false,
+                error: "This is user is not Authorized"
             });
+    
+            const userData = await UserModel.findOne({ _id : username.id });
+    
+            if (!userData) return res.status(401).json({
+                status: false,
+                error: "This is user is not Authorized"
+            });
+    
+            req.user = userData;
+    
+            next(); 
+        } catch (error) {
+            console.log(error);
+            return res.json({error: "Error Occured"}); 
         }
 
-        req.user = userData;
-
-        next();
+       
     });
 
 }
