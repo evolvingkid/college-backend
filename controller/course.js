@@ -1,15 +1,19 @@
 const CourseModel = require('../model/course');
 const { mainUserEnums } = require('../config/enums');
+const Program = require('../model/program');
 
 exports.createCourse = async (req, res) => {
     try {
 
         const body = req.body;
-
         const course = await CourseModel(body);
-
-        await course.save();
-
+        const courseID = course._id;
+        await Promise.all(
+            [
+                Program.updateOne({ _id: body.program }, { $push: { course: courseID } }),
+                course.save()
+            ]
+        );
 
         return res.status(201).json({ msg: "Course created", data: course })
     } catch (error) {
@@ -39,7 +43,7 @@ exports.courseList = async (req, res) => {
     try {
         const courseData = await CourseModel.find().populate({
             path: "program",
-            path : "teacher",
+            path: "teacher",
         });
 
         return res.json({ data: courseData });
