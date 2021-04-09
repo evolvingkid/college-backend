@@ -1,5 +1,4 @@
 const Program = require('../model/program');
-const { mainUserEnums } = require('../config/enums');
 const Course = require('../model/course');
 
 
@@ -7,10 +6,27 @@ exports.createProgram = async (req, res) => {
 
     try {
         let body = req.body;
+
+        if (body.course) {
+            let courseData = [];
+            for (let index = 0; index < body.course.length; index++) {
+                courseData[index] = Course(body.course[index]);
+            }
+            body.course = courseData;
+            const programData = Program(body);
+
+           await Promise.all([Course.insertMany(body.course), programData.save()]);
+
+            return res.status(201).json({
+                msg: "The program is created",
+                data: programData,
+            });
+
+        }
         const programData = Program(body);
 
         await programData.save();
-        
+
 
         return res.status(201).json({
             msg: "The program is created",
@@ -24,7 +40,8 @@ exports.createProgram = async (req, res) => {
             return res.status(403).json({
                 error: error.errors.name.properties.message
             });
-        }
+        } 
+
 
         return res.status(500).json({
             status: false,
@@ -40,11 +57,11 @@ exports.listProgram = async (req, res) => {
     try {
 
         const programData = await Program.find().populate({
-            path : "department",
-            populate : {
-                path : "hods.hod"
+            path: "department",
+            populate: {
+                path: "hods.hod"
             },
-           // path : "course"
+            // path : "course"
         }).populate('course');
 
         return res.json({
@@ -84,7 +101,7 @@ exports.programByID = async (req, res, next, id) => {
     try {
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(406).json({ status: false, msg: "This program is not acceptable" });
-          }
+        }
 
         const programData = await Program.findOne({ _id: id });
 
