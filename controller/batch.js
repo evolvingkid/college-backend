@@ -5,12 +5,25 @@ exports.addSem = async (req, res) => {
     try {
 
         const batchData = req.batch;
-        const body = { sem: req.body };
+        let body;
 
-        await Batch.updateOne({ _id: batchData._id }, { $push: body });
+        body = {
+            currentActiveSem: req.body.name,
+            sem: [req.body],
+        };
+
+        if (batchData.sem.length) {
+            body = { sem: batchData.sem, currentActiveSem: req.body.name };
+            body.sem[batchData.sem.length - 1].endingDate = Date();
+            body['sem'].push(req.body);
+        }
+
+        console.log(body);
+
+        await Batch.updateOne({ _id: batchData._id }, body);
 
         return res.json({ msg: "sem added" });
-        
+
     } catch (error) {
 
         return res.status(500).json({
