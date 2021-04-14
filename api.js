@@ -21,6 +21,7 @@ const programRoutes = require('./routes/program');
 const examHallRoutes = require('./routes/examhall');
 const courseRoutes = require('./routes/course');
 const permissionRoutes = require('./routes/permission');
+const batchRoute = require('./routes/batch');
 
 app.get('/', (req, res) => res.send('College API Running'));
 app.use('/api/auth', authRoutes);
@@ -30,5 +31,6 @@ app.use('/api/program', programRoutes);
 app.use('/api/examhall', examHallRoutes);
 app.use('/api/course', courseRoutes);
 app.use('/api/permission', permissionRoutes);
+app.use('/api/batch', batchRoute);
 
 module.exports = app;
