@@ -7,6 +7,9 @@ exports.signupvalidation = async (req, res, next) => {
         .withMessage('Password must contain 8 character')
         .matches(/\d/)
         .withMessage("password must contain a number");
+
+        //TODO: aadhar number
+   //     req.check('aadhar').matches('^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$').withMessage('Must be a valid aadhar number');
   
 
     const errors = req.validationErrors();

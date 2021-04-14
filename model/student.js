@@ -20,7 +20,7 @@ const StudentModel = new mongoose.Schema({
     addmissionType: {
         type: String
     },
-    batch: { type: Number , required : true},
+    batch: { type: Number, required: true },
     isNRI: {
         type: Boolean,
         default: false,
@@ -33,6 +33,7 @@ const StudentModel = new mongoose.Schema({
         file: { type: String },
         decription: { type: String }
     }],
+    program: [{ type: mongoose.Schema.Types.ObjectId }],
 }, {
     timestamps: true
 });
