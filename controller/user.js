@@ -2,6 +2,8 @@ const User = require('../model/user');
 const { mainUserEnums } = require('../config/enums')
 const bcrypt = require('bcrypt');
 const Student = require('../model/student');
+const { json } = require('body-parser');
+const mongoose = require('mongoose');
 
 exports.listUsers = async (req, res) => {
 
@@ -55,7 +57,8 @@ exports.listTeachers = async (req, res) => {
                     }
                 }
             );
-            aggregateData.push({ "$match": { "departmentdata.name": "BCAS" } },)
+            let departmentID = mongoose.Types.ObjectId(department);
+            aggregateData.push({ "$match": { "departmentdata._id": departmentID } },)
 
         }
 
@@ -72,6 +75,8 @@ exports.listTeachers = async (req, res) => {
         });
 
     } catch (error) {
+
+        console.log(error);
 
         return res.status(500).json({
             error: "Error Occured"
@@ -106,6 +111,18 @@ exports.studentList = async (req, res) => {
     studentData = await User.aggregate(aggreateData);
 
     return res.json({ data: studentData });
+
+}
+
+exports.userEdit = async (req, res) => {
+
+    const body = req.body ;
+
+    body['profilePic'] == req.file.path;
+
+   //User.updateMany({_id : })
+
+    return res.json({data : "hai"});
 
 }
 

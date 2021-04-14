@@ -6,7 +6,6 @@ const student = require('../model/student');
 const Employee = require('../model/employee');
 const config = require('config');
 
-
 //! base  API
 exports.signup = async (req, res) => {
 
