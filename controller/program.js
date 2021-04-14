@@ -61,7 +61,6 @@ exports.listProgram = async (req, res) => {
             populate: {
                 path: "hods.hod"
             },
-            // path : "course"
         }).populate('course');
 
         return res.json({
