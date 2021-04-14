@@ -92,7 +92,7 @@ exports.studentList = async (req, res) => {
     try {
 
         let studentData;
-        const { startingbatch, endingbatch, program } = req.query;
+        const { startingbatch, endingbatch, program, sem } = req.query;
 
         let aggreateData = [
             {
@@ -119,6 +119,19 @@ exports.studentList = async (req, res) => {
         if (program) {
             let programID = mongoose.Types.ObjectId(program);
             aggreateData.push({ "$match": { "student.program": programID } });
+        }
+
+        if (sem) {
+            aggreateData.push({
+                "$lookup": {
+                    "from": 'batches',
+                    "localField": "student.batch",
+                    "foreignField": "_id",
+                    "as": "batches",
+                }
+            });
+            
+            aggreateData.push({ "$match": { "batches.sem.name": parseInt(sem), "batches.sem.endingDate": null } })
         }
 
         studentData = await User.aggregate(aggreateData);
