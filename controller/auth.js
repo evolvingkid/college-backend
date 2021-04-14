@@ -5,8 +5,7 @@ const { mongoDB } = require('../error/mongoDB');
 const student = require('../model/student');
 const Employee = require('../model/employee');
 const config = require('config');
-const salt = config.get('salt');
-const bcrypt = require('bcrypt');
+
 
 //! base  API
 exports.signup = async (req, res) => {

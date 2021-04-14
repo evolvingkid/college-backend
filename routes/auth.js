@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { signup, signin, jwtAuthVerification } = require('../controller/auth');
 const { signinValidation, signupvalidation } = require('../validation/auth');
-const {userPermission} = require('../controller/user');
+const { userManagePermission} = require('../auth/user');
 
-router.post('/signup',signupvalidation,signup);
-router.post('/signin',signinValidation, signin);
+router.post('/signup', jwtAuthVerification, userManagePermission, signupvalidation, signup);
+router.post('/signin', signinValidation, signin);
 
 module.exports = router;
