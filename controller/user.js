@@ -130,8 +130,7 @@ exports.studentList = async (req, res) => {
                     "as": "batches",
                 }
             });
-            
-            aggreateData.push({ "$match": { "batches.sem.name": parseInt(sem), "batches.sem.endingDate": null } })
+            aggreateData.push({ "$match": { "batches.currentActiveSem": parseInt(sem) } })
         }
 
         studentData = await User.aggregate(aggreateData);

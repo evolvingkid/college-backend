@@ -5,6 +5,7 @@ const BatchModel = new mongoose.Schema({
 
     startingDate: { type: Date, required: true },
     endingDate: { type: Date, required: true },
+    currentActiveSem: { type: Number },
     sem: [
         {
             name: { type: Number },
