@@ -92,7 +92,7 @@ exports.studentList = async (req, res) => {
     try {
 
         let studentData;
-        const { startingbatch, endingbatch } = req.query;
+        const { startingbatch, endingbatch, program } = req.query;
 
         let aggreateData = [
             {
@@ -116,6 +116,11 @@ exports.studentList = async (req, res) => {
             aggreateData.push({ "$match": { "student.endingbatch": { $gte: endingDate } } });
         }
 
+        if (program) {
+            let programID = mongoose.Types.ObjectId(program);
+            aggreateData.push({ "$match": { "student.program": programID } });
+        }
+
         studentData = await User.aggregate(aggreateData);
 
         return res.json({ data: studentData });
@@ -135,12 +140,13 @@ exports.studentList = async (req, res) => {
 exports.userEdit = async (req, res) => {
 
     const body = req.body;
+    const userData = req.userIDData;
 
     body['profilePic'] == req.file.path;
 
-    //User.updateMany({_id : })
+    await User.updateOne({ _id: userData._id }, { body });
 
-    return res.json({ data: "hai" });
+    return res.json({ msg: "user updated" });
 
 }
 
