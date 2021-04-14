@@ -92,7 +92,7 @@ exports.studentList = async (req, res) => {
     try {
 
         let studentData;
-        const { startingbatch, endingbatch } = req.query;
+        const { startingbatch, endingbatch, program } = req.query;
 
         let aggreateData = [
             {
@@ -114,6 +114,11 @@ exports.studentList = async (req, res) => {
         if (endingbatch) {
             let endingDate = new Date(endingbatch);
             aggreateData.push({ "$match": { "student.endingbatch": { $gte: endingDate } } });
+        }
+
+        if (program) {
+            let programID = mongoose.Types.ObjectId(program);
+            aggreateData.push({ "$match": { "student.program": programID } });
         }
 
         studentData = await User.aggregate(aggreateData);
