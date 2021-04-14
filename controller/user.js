@@ -89,40 +89,58 @@ exports.listTeachers = async (req, res) => {
 
 exports.studentList = async (req, res) => {
 
-    let studentData;
-    const { batch } = req.query;
+    try {
 
-    let aggreateData = [
-        {
-            "$lookup": {
-                "from": 'student',
-                "localField": "student",
-                "foreignField": "_id",
-                "as": "student",
-            }
-        },
-        { "$match": { "student": { $exists: true, $not: {$size: 0} } } }
-    ];
+        let studentData;
+        const { startingbatch, endingbatch } = req.query;
 
-    if (batch) {
-        aggreateData.push({ "$match": { "student.batch": parseInt(batch) } });
+        let aggreateData = [
+            {
+                "$lookup": {
+                    "from": 'student',
+                    "localField": "student",
+                    "foreignField": "_id",
+                    "as": "student",
+                }
+            },
+            { "$match": { "student": { $exists: true, $not: { $size: 0 } } } }
+        ];
+
+        if (startingbatch) {
+            let startDate = new Date(startingbatch);
+            aggreateData.push({ "$match": { "student.startingBatch": { $gte: startDate } } });
+        }
+
+        if (endingbatch) {
+            let endingDate = new Date(endingbatch);
+            aggreateData.push({ "$match": { "student.endingbatch": { $gte: endingDate } } });
+        }
+
+        studentData = await User.aggregate(aggreateData);
+
+        return res.json({ data: studentData });
+    } catch (error) {
+
+        console.log(error);
+
+        return res.status(500).json({
+            error: "Error Occured"
+        });
+
     }
 
-    studentData = await User.aggregate(aggreateData);
-
-    return res.json({ data: studentData });
 
 }
 
 exports.userEdit = async (req, res) => {
 
-    const body = req.body ;
+    const body = req.body;
 
     body['profilePic'] == req.file.path;
 
-   //User.updateMany({_id : })
+    //User.updateMany({_id : })
 
-    return res.json({data : "hai"});
+    return res.json({ data: "hai" });
 
 }
 
