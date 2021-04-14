@@ -5,6 +5,7 @@ const { mongoDB } = require('../error/mongoDB');
 const student = require('../model/student');
 const Employee = require('../model/employee');
 const config = require('config');
+const Batch = require('../model/batch');
 
 //! base  API
 exports.signup = async (req, res) => {
@@ -13,10 +14,7 @@ exports.signup = async (req, res) => {
         let body = req.body;
         let userData;
         if (body.userType === 'Student') {
-            const studentData = student(body.student);
-            body.student = studentData;
-            userData = new UserModel(body);
-            await Promise.all([studentData.save(), userData.save()]);
+            userData = await createStudent(body, req);
         }
 
         if (body.userType === 'Employee') {
@@ -57,9 +55,9 @@ exports.signin = async (req, res) => {
 
         const { email, password } = req.body;
 
-        let userData = await  UserModel
+        let userData = await UserModel
             .findOne({ email: email })
-            .populate({path: "student"}).populate('employee');
+            .populate({ path: "student" }).populate('employee');
 
         if (!userData) {
             return res.status(400).json({
@@ -74,7 +72,7 @@ exports.signin = async (req, res) => {
             });
         }
 
-        const username = { id: userData._id};
+        const username = { id: userData._id };
 
         const acessToken = jwt.sign(username, process.env.ACESS_TOKEN_SECRET);
 
@@ -121,23 +119,69 @@ exports.jwtAuthVerification = async (req, res, next) => {
                 status: false,
                 error: "This is user is not Authorized"
             });
-    
-            const userData = await UserModel.findOne({ _id : username.id });
-    
+
+            const userData = await UserModel.findOne({ _id: username.id });
+
             if (!userData) return res.status(401).json({
                 status: false,
                 error: "This is user is not Authorized"
             });
-    
+
             req.user = userData;
-    
-            next(); 
+
+            next();
         } catch (error) {
             console.log(error);
-            return res.json({error: "Error Occured"}); 
+            return res.json({ error: "Error Occured" });
         }
 
-       
+
     });
+
+}
+
+
+async function createStudent(body, req) {
+    try {
+
+        const studentData = student(body.student);
+        body.student = studentData;
+        const userData = new UserModel(body);
+
+        if (studentData.program.length) {
+
+            // * calculating ending date
+            const programData = req.program;
+            let startingYear = new Date(body.student.startingBatch);
+            startingYear.setMonth(startingYear.getMonth() + (12 * programData.duration));
+            startingYear.setMonth(startingYear.getMonth() - 2);
+            studentData.endingbatch = new Date(startingYear);
+
+            let batchData = await Batch.findOne({ program: programData._id, startingDate : studentData.startingBatch });
+
+            if (!batchData) {
+                batchData = await Batch({
+                    startingDate: studentData.startingBatch,
+                    endingDate: studentData.endingbatch,
+                    program: programData._id,
+                });
+
+                studentData.batch = batchData;
+                await Promise.all([studentData.save(), userData.save(), batchData.save()]);
+                return userData;
+            }
+            
+            studentData.batch = batchData;
+
+        }
+
+        await Promise.all([studentData.save(), userData.save()]);
+
+        return userData
+    } catch (error) {
+       
+         throw error;
+
+    }
 
 }
