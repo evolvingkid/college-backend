@@ -135,12 +135,13 @@ exports.studentList = async (req, res) => {
 exports.userEdit = async (req, res) => {
 
     const body = req.body;
+    const userData = req.userIDData;
 
     body['profilePic'] == req.file.path;
 
-    //User.updateMany({_id : })
+    await User.updateOne({ _id: userData._id }, { body });
 
-    return res.json({ data: "hai" });
+    return res.json({ msg: "user updated" });
 
 }
 
