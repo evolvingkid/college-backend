@@ -26,11 +26,11 @@ exports.signupvalidation = async (req, res, next) => {
                 if (!programID.match(/^[0-9a-fA-F]{24}$/)) {
                     return res.status(406).json({ error: "Please check program is correct" });
                 }
-    
+
                 const programData = await Program.findOne({ _id: programID });
 
                 req.program = programData;
-    
+
             }
         }
     } catch (error) {
@@ -40,10 +40,10 @@ exports.signupvalidation = async (req, res, next) => {
         return res.status(500).json({
             error: "Error Occured"
         });
-        
+
     }
 
-    
+
 
 
 
@@ -94,5 +94,54 @@ exports.passwordvalidation = async (req, res, next) => {
     }
 
     next();
+
+}
+
+exports.bulkuserCreation = async (req, res, next) => {
+
+    req.check('usertype', 'usertype is required').notEmpty();
+
+    const { usertype, program } = req.body;
+
+    try {
+
+        if (usertype && usertype === 'Student') {
+
+            req.check('startingBatch', 'startingBatch is required').notEmpty();
+            req.check('program', 'program is required').notEmpty();
+
+            if (!program.match(/^[0-9a-fA-F]{24}$/)) {
+                return res.status(406).json({ error: "Please check program is correct" });
+            }
+
+            const programData = await Program.findOne({ _id: program });
+
+            if (!programData) {
+                return res.status(406).json({ error: "Please check program is correct" });
+            }
+
+            console.log(programData);
+
+            req.program = programData;
+
+            next();
+
+        }
+
+    } catch (error) {
+
+        return res.status(500).json({ error: "Error occured" });
+
+    }
+
+
+
+    const errors = req.validationErrors();
+    if (errors) {
+        return res.status(400).json({
+            status: false,
+            error: errors
+        });
+    }
 
 }
