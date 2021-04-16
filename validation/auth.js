@@ -120,21 +120,16 @@ exports.bulkuserCreation = async (req, res, next) => {
                 return res.status(406).json({ error: "Please check program is correct" });
             }
 
-            console.log(programData);
-
-            req.program = programData;
-
-            next();
+            req.program = programData;   
 
         }
+        
 
     } catch (error) {
 
         return res.status(500).json({ error: "Error occured" });
 
     }
-
-
 
     const errors = req.validationErrors();
     if (errors) {
@@ -143,5 +138,7 @@ exports.bulkuserCreation = async (req, res, next) => {
             error: errors
         });
     }
+
+    next();
 
 }

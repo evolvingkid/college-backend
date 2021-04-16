@@ -18,8 +18,6 @@ exports.addSem = async (req, res) => {
             body['sem'].push(req.body);
         }
 
-        console.log(body);
-
         await Batch.updateOne({ _id: batchData._id }, body);
 
         return res.json({ msg: "sem added" });
@@ -29,6 +27,24 @@ exports.addSem = async (req, res) => {
         return res.status(500).json({
             error: "Error Occured"
         });
+    }
+
+}
+
+exports.listbatch = async (req, res) => {
+    try {
+
+        const query = req.query;
+
+        const batchData = await Batch.find(query).populate('program');
+
+
+        return res.json({ data: batchData });
+
+    } catch (error) {
+
+        return res.status(500).json({ error: "Error occured" });
+
     }
 
 }
