@@ -57,9 +57,9 @@ exports.signin = async (req, res) => {
 
         const { email, password } = req.body;
 
-        let userData = await (await UserModel
-            .findOne({ email: email }))
-            .populate({path: "student"});
+        let userData = await UserModel
+            .findOne({ email: email })
+            .populate("student");
 
         if (!userData) {
             return res.status(400).json({
