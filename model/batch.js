@@ -13,7 +13,7 @@ const BatchModel = new mongoose.Schema({
             endingDate: { type: Date }
         }
     ],
-    program: { type: mongoose.Schema.Types.ObjectId },
+    program: { type: mongoose.Schema.Types.ObjectId , ref : 'PrograModel' },
 });
 
 BatchModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });

@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const StudentModel = new mongoose.Schema({
-    fatherName: { type: String, required: true },
-    motherName: { type: String, required: true },
+    fatherName: { type: String},
+    motherName: { type: String },
     income: { type: Number },
     caste: { type: String },
     religion: { type: String },

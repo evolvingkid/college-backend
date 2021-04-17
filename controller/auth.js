@@ -34,6 +34,8 @@ exports.signup = async (req, res) => {
 
     } catch (error) {
 
+        console.log(error);
+
         const errorMsg = mongoDB(error);
 
         if (errorMsg.length) {

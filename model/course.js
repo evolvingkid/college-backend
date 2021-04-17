@@ -25,9 +25,6 @@ const CourseModel = new mongoose.Schema({
     isvalid: {
         type: Boolean
     },
-    examdates: [
-        { type: Date }
-    ],
     startDate: {
         type: Date,
         required: true
@@ -51,10 +48,19 @@ const CourseModel = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "user"
         }
+    ],
+    activeExamDate: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "examModel"
+    },
+    examsHistory: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "examModel"
+        }
     ]
 });
 
 CourseModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });
-
 
 module.exports = Course = mongoose.model('courseModel', CourseModel);
