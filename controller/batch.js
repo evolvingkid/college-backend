@@ -49,9 +49,6 @@ exports.listbatch = async (req, res) => {
 
 }
 
-
-
-
 exports.batchByID = async (req, res, next, id) => {
 
     try {

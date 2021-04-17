@@ -29,6 +29,10 @@ exports.signupvalidation = async (req, res, next) => {
 
                 const programData = await Program.findOne({ _id: programID });
 
+                if (!programData) {
+                    return res.status(406).json({ error: "Program not found" });
+                }
+
                 req.program = programData;
 
             }

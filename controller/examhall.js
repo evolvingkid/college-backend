@@ -6,16 +6,15 @@ exports.createExamHall = async (req, res) => {
 
     try {
 
-        const { name, maxcount, usedcount } = req.body;
+        const body = req.body;
 
-        const examHall = await ExamHall({
-            name: name,
-            maxCount: maxcount,
-            usedCount: usedcount
-        });
+        if (!body.usedCount) {
+            body.usedCount = body.maxCount;
+        }
+
+        const examHall = ExamHall(body);
 
         await examHall.save();
-
 
         return res.status(201).json({
             msg: "exam hall Created",
@@ -102,21 +101,6 @@ exports.examHallDelete = async (req, res) => {
 
 }
 
-exports.examHallPermission = (req, res, next) => {
-    let flag = 0;
-    req.user.priviliage.forEach(element => {
-        if (element == mainUserEnums.admin || element == mainUserEnums.examHall) {
-            flag++;
-        }
-    });
-
-    if (flag == 0) return res.status(401).json({
-        msg: "This is user is not Authorized"
-    });
-
-    next();
-}
-
 
 exports.examhallByID = async (req, res, next, id) => {
 
@@ -124,7 +108,7 @@ exports.examhallByID = async (req, res, next, id) => {
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(406).json({ status: false, msg: "This ExamHall is not acceptable" });
-          }
+        }
 
         const examHall = await ExamHall.findOne({ _id: id });
 
