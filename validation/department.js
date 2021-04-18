@@ -13,13 +13,16 @@ exports.departmentReq = async (req, res, next) => {
     }
 
     const { hods } = req.body;
-    const hodData = await User.findOne({ _id: hods[0].hod });
+    if (hods) {
+        const hodData = await User.findOne({ _id: hods[0].hod });
 
-    if (!hodData) {
-        return res.status(400).json({
-            status: false,
-            msg: "HOD Not Found"
-        });
+        if (!hodData) {
+            return res.status(400).json({
+                status: false,
+                msg: "HOD Not Found"
+            });
+        }
+
     }
 
     next();

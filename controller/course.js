@@ -89,16 +89,6 @@ exports.courseDelete = async (req, res) => {
     }
 }
 
-exports.AddExamDate = async (req, res) => {
-
-    const { examDate } = req.body;
-    const courseID = req.course._id;
-    const dataBase = { examdates: examDate };
-    await CourseModel.updateOne({ _id: courseID }, { $push: dataBase });
-
-    return res.json({ msg: "new Exam Date Added" });
-}
-
 
 exports.courseByID = async (req, res, next, id) => {
 

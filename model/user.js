@@ -50,61 +50,47 @@ const userSchema = new mongoose.Schema({
   communicationAddress: {
     country: {
       type: String,
-      required: true,
     },
     state: {
       type: String,
-      required: true,
     },
     district: {
       type: String,
-      required: true,
     },
     city: {
       type: String,
-      required: true,
     },
     street: {
       type: String,
-      required: true,
     },
     house: {
       type: String,
-      required: true,
     },
     pincode: {
       type: Number,
-      required: true,
     },
   },
   permanentAddress: {
     country: {
       type: String,
-      required: true,
     },
     state: {
       type: String,
-      required: true,
     },
     district: {
       type: String,
-      required: true,
     },
     city: {
       type: String,
-      required: true,
     },
     street: {
       type: String,
-      required: true,
     },
     house: {
       type: String,
-      required: true,
     },
     pincode: {
       type: Number,
-      required: true,
     },
   },
   userType: {
@@ -121,10 +107,10 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   student: {
-    type: mongoose.Schema.Types.ObjectId,  ref: "student"
+    type: mongoose.Schema.Types.ObjectId, ref: "student"
   },
-  employee : {
-    type: mongoose.Schema.Types.ObjectId,  ref: "employee"
+  employee: {
+    type: mongoose.Schema.Types.ObjectId, ref: "employee"
   }
 }, {
   timestamps: true

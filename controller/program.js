@@ -15,6 +15,11 @@ exports.createProgram = async (req, res) => {
             body.course = courseData;
             const programData = Program(body);
 
+            for (let index = 0; index < body.course.length; index++) {
+                courseData[index].program = programData._id;
+            }
+            body.course = courseData;
+
            await Promise.all([Course.insertMany(body.course), programData.save()]);
 
             return res.status(201).json({

@@ -1,6 +1,6 @@
-exports.examhallReq = async (req, res, next) => {
-    req.check('name', 'Name is required').notEmpty();
-    req.check('maxCount', 'maxcount is required').notEmpty();
+exports.seatArragemnetValidation =  async (req, res, next) => {
+
+    req.check('date', 'date is required').notEmpty();
 
     const errors = req.validationErrors();
     if (errors) {
@@ -11,4 +11,6 @@ exports.examhallReq = async (req, res, next) => {
     }
 
     next();
+
+
 }
