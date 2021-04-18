@@ -1,17 +1,32 @@
 const Program = require('../model/program');
-const { mainUserEnums } = require('../config/enums');
 const Course = require('../model/course');
 
 
 exports.createProgram = async (req, res) => {
 
     try {
-        const programData = Program({
-            name: req.body.name,
-            departmentID: req.body.department
-        });
+        let body = req.body;
+
+        if (body.course) {
+            let courseData = [];
+            for (let index = 0; index < body.course.length; index++) {
+                courseData[index] = Course(body.course[index]);
+            }
+            body.course = courseData;
+            const programData = Program(body);
+
+           await Promise.all([Course.insertMany(body.course), programData.save()]);
+
+            return res.status(201).json({
+                msg: "The program is created",
+                data: programData,
+            });
+
+        }
+        const programData = Program(body);
 
         await programData.save();
+
 
         return res.status(201).json({
             msg: "The program is created",
@@ -19,15 +34,18 @@ exports.createProgram = async (req, res) => {
         });
     } catch (error) {
 
+        console.log(error);
+
         if (error.errors.name) {
             return res.status(403).json({
-                msg: error.errors.name.properties.message
+                error: error.errors.name.properties.message
             });
-        }
+        } 
+
 
         return res.status(500).json({
             status: false,
-            msg: "Error Occured",
+            error: "Error Occured",
         });
 
     }
@@ -38,7 +56,12 @@ exports.listProgram = async (req, res) => {
 
     try {
 
-        const programData = await Program.find().populate('departmentID');
+        const programData = await Program.find().populate({
+            path: "department",
+            populate: {
+                path: "hods.hod"
+            },
+        }).populate('course');
 
         return res.json({
             data: programData
@@ -77,7 +100,7 @@ exports.programByID = async (req, res, next, id) => {
     try {
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(406).json({ status: false, msg: "This program is not acceptable" });
-          }
+        }
 
         const programData = await Program.findOne({ _id: id });
 
@@ -92,22 +115,6 @@ exports.programByID = async (req, res, next, id) => {
 
     }
 
-}
-
-exports.programPermission = (req, res, next) => {
-
-    let flag = 0;
-    req.user.priviliage.forEach(element => {
-        if (element == mainUserEnums.admin || element == mainUserEnums.department) {
-            flag++;
-        }
-    });
-
-    if (flag == 0) return res.status(401).json({
-        msg: "This is user is not Authorized"
-    });
-
-    next();
 }
 
 exports.deleteProgramByParentTable = async (query) => {

@@ -1,6 +1,4 @@
 exports.mongoDB = (error) => {
-
-   
    
     let errorVal = [];
     if (error.customError) {

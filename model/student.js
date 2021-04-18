@@ -20,18 +20,26 @@ const StudentModel = new mongoose.Schema({
     addmissionType: {
         type: String
     },
+    startingBatch: { type: Date },
+    endingbatch: { type: Date },
+    batch: { type: mongoose.Schema.Types.ObjectId },
     isNRI: {
         type: Boolean,
-        default : false,
+        default: false,
     },
     achivement: [],
     placement: [],
     club: [],
-    education: [],
+    education: [{
+        title: { type: String },
+        file: { type: String },
+        decription: { type: String }
+    }],
+    program: [{ type: mongoose.Schema.Types.ObjectId }],
 }, {
     timestamps: true
 });
 
 StudentModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });
 
-module.exports = Program = mongoose.model('student', StudentModel, 'student');
+module.exports = student = mongoose.model('student', StudentModel, 'student');

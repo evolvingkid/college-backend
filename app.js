@@ -6,7 +6,7 @@ mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4000;
 connectDB();
 let server = app.listen(PORT, () => console.log(`Server starts on  ${PORT}`));
 

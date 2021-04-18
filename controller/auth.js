@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const { mongoDB } = require('../error/mongoDB');
 const student = require('../model/student');
 const Employee = require('../model/employee');
-const user = require('../model/user');
+const config = require('config');
+const Batch = require('../model/batch');
 
 //! base  API
 exports.signup = async (req, res) => {
@@ -13,10 +14,7 @@ exports.signup = async (req, res) => {
         let body = req.body;
         let userData;
         if (body.userType === 'Student') {
-            const studentData = student(body.student);
-            body.student = studentData;
-            userData = new UserModel(body);
-            await Promise.all([studentData.save(), userData.save()]);
+            userData = await createStudent(body, req);
         }
 
         if (body.userType === 'Employee') {
@@ -40,13 +38,13 @@ exports.signup = async (req, res) => {
 
         if (errorMsg.length) {
             return res.status(403).json({
-                msg: errorMsg[0],
-                error: errorMsg
+                error: errorMsg[0],
+                errorMsgs: errorMsg
             });
         }
 
         return res.status(500).json({
-            msg: "Error Occured"
+            error: "Error Occured"
         });
 
     }
@@ -59,13 +57,14 @@ exports.signin = async (req, res) => {
 
         let userData = await UserModel
             .findOne({ email: email })
-            .populate("student");
+            .populate({ path: "student" }).populate('employee');
 
         if (!userData) {
             return res.status(400).json({
-                err: "User not found"
+                error: "User not found"
             });
         }
+
 
         if (!userData.authenticate(password)) {
             return res.status(401).json({
@@ -73,7 +72,8 @@ exports.signin = async (req, res) => {
             });
         }
 
-        const username = { email: userData.email, password: userData.hashed_password };
+        const username = { id: userData._id };
+
         const acessToken = jwt.sign(username, process.env.ACESS_TOKEN_SECRET);
 
         userData.hashed_password = undefined;
@@ -92,7 +92,7 @@ exports.signin = async (req, res) => {
     } catch (error) {
 
         return res.status(500).json({
-            msg: "Error Occured"
+            error: "Autheticate Error"
         });
 
     }
@@ -109,29 +109,79 @@ exports.jwtAuthVerification = async (req, res, next) => {
 
     if (token == null) return res.status(401).json({
         status: false,
-        msg: "This is user is not Authorized"
+        error: "This is user is not Authorized"
     });
 
 
     jwt.verify(token, process.env.ACESS_TOKEN_SECRET, async (err, username) => {
+        try {
+            if (err) return res.status(401).json({
+                status: false,
+                error: "This is user is not Authorized"
+            });
 
-        if (err) return res.status(401).json({
-            status: false,
-            msg: "This is user is not Authorized"
-        });
+            const userData = await UserModel.findOne({ _id: username.id });
 
-        const userData = await UserModel.findOne({ email: username.email });
+            if (!userData) return res.status(401).json({
+                status: false,
+                error: "This is user is not Authorized"
+            });
 
-        console.log(userData);
+            req.user = userData;
 
-        if (!userData) return res.status(401).json({
-            status: false,
-            msg: "This is user is not Authorized"
-        });
+            next();
+        } catch (error) {
+            console.log(error);
+            return res.json({ error: "Error Occured" });
+        }
 
-        req.user = userData;
 
-        next();
     });
+
+}
+
+
+async function createStudent(body, req) {
+    try {
+
+        const studentData = student(body.student);
+        body.student = studentData;
+        const userData = new UserModel(body);
+
+        if (studentData.program.length) {
+
+            // * calculating ending date
+            const programData = req.program;
+            let startingYear = new Date(body.student.startingBatch);
+            startingYear.setMonth(startingYear.getMonth() + (12 * programData.duration));
+            startingYear.setMonth(startingYear.getMonth() - 2);
+            studentData.endingbatch = new Date(startingYear);
+
+            let batchData = await Batch.findOne({ program: programData._id, startingDate : studentData.startingBatch });
+
+            if (!batchData) {
+                batchData = await Batch({
+                    startingDate: studentData.startingBatch,
+                    endingDate: studentData.endingbatch,
+                    program: programData._id,
+                });
+
+                studentData.batch = batchData;
+                await Promise.all([studentData.save(), userData.save(), batchData.save()]);
+                return userData;
+            }
+            
+            studentData.batch = batchData;
+
+        }
+
+        await Promise.all([studentData.save(), userData.save()]);
+
+        return userData
+    } catch (error) {
+       
+         throw error;
+
+    }
 
 }

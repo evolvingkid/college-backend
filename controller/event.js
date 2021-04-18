@@ -1,21 +1,25 @@
+
 const { mainUserEnums } = require('../config/enums');
 const Department = require('../model/department');
-const { deleteProgramByParentTable } = require('../controller/program');
 const Program = require('../model/program');
 const Course = require('../model/course');
+const Events = require('../model/event');
 
 
-exports.createDepartment = async (req, res) => {
+exports.createEvent = async (req, res) => {
 
+    console.log('====================================');
+    console.log("Asd");
+    console.log('====================================');
 
     try {
         const body = req.body;
-        const departmentData = await Department(body);
+        const eventData = await Events(body);
 
-        await departmentData.save();
+        await eventData.save();
 
         return res.status(200).json({
-            msg: "Department Created",
+            msg: "Event Created",
             data: departmentData
         });
     } catch (error) {
@@ -36,36 +40,30 @@ exports.createDepartment = async (req, res) => {
 
 }
 
-exports.listDepartment = async (req, res) => {
-
+exports.listEvents = async (req, res) => {
     try {
-        const departmentData = await Department.find().populate({
-            path: "hods.hod",
-            populate : {
-                path: "employee"
-            }
-        });
+        const eventData = await Events.find();
 
         return res.json({
-            data: departmentData
+            data: eventData
         });
     } catch (error) {
 
         return res.status(500).json({
             status: false,
-            msg: "Error Occured",
+            error: "Error Occured",
         });
     }
 
 }
 
-exports.editDepartment = async (req, res) => {
+exports.editEvent = async (req, res) => {
 
     try {
         let dataBaseBody = req.body;
 
-        await Department.updateOne({ _id: req.department._id },
-            { $set: dataBaseBody });
+        await Events.updateOne({ _id: req.event._id },
+            { $set: eventData });
 
         return res.json({
             msg: "Department Upated"
@@ -80,7 +78,7 @@ exports.editDepartment = async (req, res) => {
     }
 }
 
-exports.departmentDelete = async (req, res) => {
+exports.eventDelete = async (req, res) => {
 
     try {
 
@@ -130,7 +128,7 @@ exports.departmentDelete = async (req, res) => {
     }
 }
 
-exports.departmentByID = async (req, res, next, id) => {
+exports.eventByID = async (req, res, next, id) => {
 
     try {
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
