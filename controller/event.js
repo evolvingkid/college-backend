@@ -56,13 +56,13 @@ exports.listEvents = async (req, res) => {
 exports.editEvent = async (req, res) => {
 
     try {
-        let dataBaseBody = req.body;
+        let eventData = req.body;
 
         await Events.updateOne({ _id: req.event._id },
             { $set: eventData });
 
         return res.json({
-            msg: "Department Upated"
+            msg: "Event Upated"
         });
 
     } catch (error) {
@@ -78,38 +78,10 @@ exports.eventDelete = async (req, res) => {
 
     try {
 
-        const department = req.department;
-        console.log(department._id);
-
-        let programData = await Program.find({ departmentID: department._id });
-
-        console.log(programData);
-
-        let courseQuery = [];
-        for (let index = 0; index < programData.length; index++) {
-            courseQuery[index] = { program: programData[index]._id };
-        }
-
-        console.log(courseQuery);
-
-        if (courseQuery.length) {
-            await Promise.all([Course.deleteMany({ $or: courseQuery }),
-            Program.deleteMany({ departmentID: department._id }),
-            Department.deleteMany({ _id: req.department._id })])
-
-            return res.json({
-                status: true,
-                msg: "Department Deleted"
-            });
-        }
-
-        await Promise.all([Program.deleteMany({ departmentID: department._id }),
-        Department.deleteMany({ _id: req.department._id })]);
-
-
+        await Events.remove({ _id: req.event._id });
         return res.json({
             status: true,
-            msg: "Department Deleted"
+            msg: "Event Deleted"
         });
 
     } catch (error) {
@@ -131,13 +103,13 @@ exports.eventByID = async (req, res, next, id) => {
             return res.status(406).json({ status: false, msg: "This Department is not acceptable" });
         }
 
-        const departmentData = await Department.findOne({ _id: id });
+        const eventData = await Events.findOne({ _id: id });
 
-        if (!departmentData) return res.status(401).json({
+        if (!eventData) return res.status(401).json({
             msg: "This Department doesn't exist"
         });
 
-        req.department = departmentData;
+        req.event = eventData;
 
         next();
     } catch (error) {
