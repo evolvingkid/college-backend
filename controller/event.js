@@ -8,10 +8,6 @@ const Events = require('../model/event');
 
 exports.createEvent = async (req, res) => {
 
-    console.log('====================================');
-    console.log("Asd");
-    console.log('====================================');
-
     try {
         const body = req.body;
         const eventData = await Events(body);
@@ -20,11 +16,11 @@ exports.createEvent = async (req, res) => {
 
         return res.status(200).json({
             msg: "Event Created",
-            data: departmentData
+            data: eventData
         });
     } catch (error) {
 
-        if (error.errors.name) {
+        if (error?.errors?.name) {
             return res.status(403).json({
                 error: error.errors.name.properties.message
             });
@@ -32,7 +28,7 @@ exports.createEvent = async (req, res) => {
 
         return res.status(500).json({
             status: false,
-            error: "Error Occured",
+            error: error,
         });
 
     }
