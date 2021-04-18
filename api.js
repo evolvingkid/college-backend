@@ -22,6 +22,7 @@ const examHallRoutes = require('./routes/examhall');
 const courseRoutes = require('./routes/course');
 const permissionRoutes = require('./routes/permission');
 const batchRoute = require('./routes/batch');
+const eventRoute = require('./routes/event');
 const examRoute = require('./routes/exam');
 const seatArragement = require('./routes/seatArragement'); 
 
@@ -35,6 +36,7 @@ app.use('/api/examhall', examHallRoutes);
 app.use('/api/course', courseRoutes);
 app.use('/api/permission', permissionRoutes);
 app.use('/api/batch', batchRoute);
+app.use('/api/event', eventRoute);
 app.use('/api/exam', examRoute);
 app.use('/api/seatarragement', seatArragement);
 

@@ -15,5 +15,7 @@ exports.userPermissionEnums = {
     programManage : 'programManage',
     programRead : 'programRead',
     courseRead : 'courseRead',
-    courseManage : 'courseManage'
+    courseManage : 'courseManage',
+    eventRead : 'courseRead',
+    eventManage : 'courseManage'
 }

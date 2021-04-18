@@ -1,4 +1,3 @@
-
 const { mainUserEnums } = require('../config/enums');
 const Department = require('../model/department');
 const { deleteProgramByParentTable } = require('../controller/program');
