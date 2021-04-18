@@ -3,14 +3,28 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const BatchModel = new mongoose.Schema({
 
-    startingDate: { type: Date, required: true },
-    endingDate: { type: Date, required: true },
-    currentActiveSem: { type: Number },
+    startingDate: {
+        type: Date,
+        required: true
+    },
+    endingDate: {
+        type: Date,
+        required: true
+    },
+    currentActiveSem: {
+        type: Number
+    },
     sem: [
         {
-            name: { type: Number },
-            staringDate: { type: Date },
-            endingDate: { type: Date }
+            name: {
+                type: Number
+            },
+            staringDate: {
+                type: Date
+            },
+            endingDate: {
+                type: Date
+            }
         }
     ],
     program: { type: mongoose.Schema.Types.ObjectId , ref : 'PrograModel' },
@@ -18,4 +32,4 @@ const BatchModel = new mongoose.Schema({
 
 BatchModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });
 
-module.exports = Department = mongoose.model('Batch', BatchModel);
+module.exports = Batch = mongoose.model('Batch', BatchModel);

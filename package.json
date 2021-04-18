@@ -4,7 +4,7 @@
   "description": "college project",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "server": "nodemon app.js",
     "test:unit": "jest",
     "test": "mocha --timeout 5000 --recursive --exit"

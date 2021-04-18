@@ -15,7 +15,7 @@ const ProgramModel = new mongoose.Schema({
     },
     startdate: {
         type: Date,
-        reqyuired: true,
+        required: true,
     },
     enddate: {
         type: Date
