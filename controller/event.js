@@ -20,7 +20,7 @@ exports.createEvent = async (req, res) => {
         });
     } catch (error) {
 
-        if (error?.errors?.name) {
+        if (error&& error.errors && error.errors.name) {
             return res.status(403).json({
                 error: error.errors.name.properties.message
             });
