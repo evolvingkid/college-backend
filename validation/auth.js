@@ -13,8 +13,6 @@ exports.signupvalidation = async (req, res, next) => {
     //TODO: aadhar number
     //     req.check('aadhar').matches('^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$').withMessage('Must be a valid aadhar number');
 
-    const body = req.body;
-
     try {
 
         if (body.student) {
@@ -39,17 +37,11 @@ exports.signupvalidation = async (req, res, next) => {
         }
     } catch (error) {
 
-        console.log(error);
-
         return res.status(500).json({
             error: "Error Occured"
         });
 
     }
-
-
-
-
 
 
     const errors = req.validationErrors();

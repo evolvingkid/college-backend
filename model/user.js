@@ -101,17 +101,21 @@ const userSchema = new mongoose.Schema({
   },
   permission: [],
   profilePic: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId, ref: "FileModel"
   },
-  adharprofilePic: {
-    type: String,
+  aadharCard: {
+    type: mongoose.Schema.Types.ObjectId, ref: "FileModel"
+  },
+  certificate: {
+    type: mongoose.Schema.Types.ObjectId, ref: "FileModel"
   },
   student: {
     type: mongoose.Schema.Types.ObjectId, ref: "student"
   },
   employee: {
     type: mongoose.Schema.Types.ObjectId, ref: "employee"
-  }
+  },
+
 }, {
   timestamps: true
 });

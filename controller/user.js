@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const Student = require('../model/student');
 const { json } = require('body-parser');
 const mongoose = require('mongoose');
+const File = require('../model/file');
 
 exports.listUsers = async (req, res) => {
 
@@ -131,7 +132,7 @@ exports.studentList = async (req, res) => {
         }
 
         if (sem) {
-         
+
             aggreateData.push({ "$match": { "batches.currentActiveSem": parseInt(sem) } })
         }
 
@@ -159,14 +160,47 @@ exports.studentList = async (req, res) => {
 
 exports.userEdit = async (req, res) => {
 
-    const body = req.body;
-    const userData = req.userIDData;
+    try {
 
-    body['profilePic'] == req.file.path;
+        const obj = Object.assign({}, req.body)
 
-    await User.updateOne({ _id: userData._id }, { body });
+        let body = obj;
 
-    return res.json({ msg: "user updated" });
+        const userData = req.userIDData;
+        const file = req.files;
+        let fileData = [];
+
+        console.log(file);
+
+        if (file.profilePic) {
+            const profilePic = File({ path: file.profilePic[0].path, user: userData._id });
+            fileData.push(profilePic);
+            body.profilePic = profilePic._id;
+        }
+
+        if (file.adharFile) {
+            const aadharFile = File({ path: file.adharFile[0].path, user: userData._id });
+            fileData.push(aadharFile);
+            body.aadharCard = aadharFile._id;
+        }
+
+        if (file.certificate) {
+            const certificateFile = File({ path: file.certificate[0].path, user: userData._id });
+            fileData.push(certificateFile);
+            body.certificate = certificateFile._id;
+        }
+
+        await Promise.all([User.updateOne({ _id: userData._id }, body), File.insertMany(fileData)]);
+
+        return res.json({ msg: "user updated" });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            error: "Error Occured"
+        });
+    }
+
 
 }
 

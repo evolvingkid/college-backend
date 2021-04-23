@@ -8,14 +8,16 @@ const { jwtAuthVerification } = require('../controller/auth');
 const { passwordvalidation } = require('../validation/auth');
 const { userManagePermission, userReadPermission } = require('../auth/user');
 const multer = require('multer');
-const { fileUpload } = require('../config/fileUpload')
+const { fileUpload } = require('../config/fileUpload');
 
 router.get('/', jwtAuthVerification, userReadPermission, listUsers);
 router.get('/teacher', jwtAuthVerification, userReadPermission, listTeachers);
 router.get('/student', jwtAuthVerification, userReadPermission, studentList);
 router.delete('/:userByID', jwtAuthVerification, userManagePermission, deleteUser);
 router.patch('/passwordchange', jwtAuthVerification, passwordvalidation, userPasswordChange);
-router.patch('/:userByID', jwtAuthVerification, userManagePermission, fileUpload.single('profilePic'), userEdit);
+router.patch('/:userByID', jwtAuthVerification, userManagePermission,
+    fileUpload.fields([{ name: 'profilePic', maxCount: 1 }, { name: 'adharFile', maxCount: 1 }, { name: 'certificate', maxCount: 5 }]),
+    userEdit);
 
 router.param("userByID", userByID);
 
