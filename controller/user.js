@@ -5,6 +5,7 @@ const Student = require('../model/student');
 const { json } = require('body-parser');
 const mongoose = require('mongoose');
 const File = require('../model/file');
+const { mongoDB } = require('../error/mongoDB');
 
 exports.listUsers = async (req, res) => {
 
@@ -147,7 +148,14 @@ exports.studentList = async (req, res) => {
         return res.json({ data: studentData });
     } catch (error) {
 
-        console.log(error);
+        const errorMsg = mongoDB(error);
+
+        if (errorMsg.length) {
+            return res.status(403).json({
+                error: errorMsg[0],
+                errorMsgs: errorMsg
+            });
+        }
 
         return res.status(500).json({
             error: "Error Occured"
@@ -195,6 +203,15 @@ exports.userEdit = async (req, res) => {
         return res.json({ msg: "user updated" });
 
     } catch (error) {
+
+        const errorMsg = mongoDB(error);
+
+        if (errorMsg.length) {
+            return res.status(403).json({
+                error: errorMsg[0],
+                errorMsgs: errorMsg
+            });
+        }
 
         return res.status(500).json({
             error: "Error Occured"

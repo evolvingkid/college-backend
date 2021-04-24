@@ -34,8 +34,6 @@ exports.signup = async (req, res) => {
 
     } catch (error) {
 
-        console.log(error);
-
         const errorMsg = mongoDB(error);
 
         if (errorMsg.length) {
@@ -80,6 +78,8 @@ exports.signin = async (req, res) => {
 
         userData.hashed_password = undefined;
         userData.salt = undefined;
+
+        res.cookie('userid', userData._id);
 
         return res.json({
             sucess: true,
@@ -133,7 +133,7 @@ exports.jwtAuthVerification = async (req, res, next) => {
 
             next();
         } catch (error) {
-            console.log(error);
+
             return res.json({ error: "Error Occured" });
         }
 
@@ -159,7 +159,7 @@ async function createStudent(body, req) {
             startingYear.setMonth(startingYear.getMonth() - 2);
             studentData.endingbatch = new Date(startingYear);
 
-            let batchData = await Batch.findOne({ program: programData._id, startingDate : studentData.startingBatch });
+            let batchData = await Batch.findOne({ program: programData._id, startingDate: studentData.startingBatch });
 
             if (!batchData) {
                 batchData = await Batch({
@@ -172,7 +172,7 @@ async function createStudent(body, req) {
                 await Promise.all([studentData.save(), userData.save(), batchData.save()]);
                 return userData;
             }
-            
+
             studentData.batch = batchData;
 
         }
@@ -181,8 +181,8 @@ async function createStudent(body, req) {
 
         return userData
     } catch (error) {
-       
-         throw error;
+
+        throw error;
 
     }
 

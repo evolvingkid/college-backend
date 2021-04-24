@@ -24,7 +24,9 @@ const permissionRoutes = require('./routes/permission');
 const batchRoute = require('./routes/batch');
 const eventRoute = require('./routes/event');
 const examRoute = require('./routes/exam');
-const seatArragement = require('./routes/seatArragement'); 
+const seatArragement = require('./routes/seatArragement');
+const websiteHome = require('./routes/website/websiteHome');
+const websiteCoreData = require('./routes/website/websiteCoreData');
 
 
 app.get('/', (req, res) => res.send('College API Running'));
@@ -39,5 +41,7 @@ app.use('/api/batch', batchRoute);
 app.use('/api/event', eventRoute);
 app.use('/api/exam', examRoute);
 app.use('/api/seatarragement', seatArragement);
+app.use('/api/website/home', websiteHome);
+app.use('/api/webiste/coredata', websiteCoreData);
 
 module.exports = app;

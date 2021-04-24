@@ -17,5 +17,11 @@ exports.userPermissionEnums = {
     courseRead : 'courseRead',
     courseManage : 'courseManage',
     eventRead : 'courseRead',
-    eventManage : 'courseManage'
+    eventManage : 'courseManage',
+    websiteMange : 'websiteManage'
+}
+
+exports.enumTypeForWebsite = {
+    website : "WEBSITE",
+    singleData : "SINGLEDATA"
 }
