@@ -6,12 +6,17 @@ const examModel = new mongoose.Schema({
     date: {
         type: Date,
     },
-    batch : {
+    batch: {
         type: mongoose.Schema.Types.ObjectId,
-        ref : 'Batch',
+        ref: 'Batch',
     },
     maxmark: { type: Number },
     minMark: { type: Number },
+    course: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'courseModel',
+    },
+    isActive: { type: Boolean },
 });
 
 examModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });
