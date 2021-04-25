@@ -1,10 +1,11 @@
 const CoreDATA = require('../../model/website/websiteCoreData');
+const { mongoDB } = require('../../error/mongoDB');
 
 exports.addCoreData = async (req, res) => {
 
     try {
 
-        const body = req.body;
+        let body = req.body;
         body.indentifier.trim();
         let coreData = CoreDATA(body);
 
@@ -14,7 +15,7 @@ exports.addCoreData = async (req, res) => {
 
         await coreData.save();
 
-        return res.json({ data: coreData }); 
+        return res.json({ data: coreData });
 
     } catch (error) {
 

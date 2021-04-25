@@ -44,7 +44,8 @@ exports.courseList = async (req, res) => {
         const courseData = await CourseModel.find().populate({
             path: "program",
             path: "teacher",
-        });
+        }).populate("activeExamDate")
+        .populate("examsHistory");
 
         return res.json({ data: courseData });
     } catch (error) {

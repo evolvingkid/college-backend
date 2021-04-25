@@ -1,6 +1,6 @@
 const { userPermissionEnums } = require('../config/enums');
 
-exports.websitemanage = (req, res) => {
+exports.websitemanage = (req, res, next) => {
     let user = req.user;
 
     if (user.userType === "Employee") {

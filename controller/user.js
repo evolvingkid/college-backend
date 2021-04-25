@@ -178,27 +178,28 @@ exports.userEdit = async (req, res) => {
         const file = req.files;
         let fileData = [];
 
-        console.log(file);
+        if (file) {
+            if (file.profilePic) {
+                const profilePic = File({ path: file.profilePic[0].path, user: userData._id });
+                fileData.push(profilePic);
+                body.profilePic = profilePic._id;
+            }
 
-        if (file.profilePic) {
-            const profilePic = File({ path: file.profilePic[0].path, user: userData._id });
-            fileData.push(profilePic);
-            body.profilePic = profilePic._id;
+            if (file.adharFile) {
+                const aadharFile = File({ path: file.adharFile[0].path, user: userData._id });
+                fileData.push(aadharFile);
+                body.aadharCard = aadharFile._id;
+            }
+
+            if (file.certificate) {
+                const certificateFile = File({ path: file.certificate[0].path, user: userData._id });
+                fileData.push(certificateFile);
+                body.certificate = certificateFile._id;
+            }
+            await Promise.all([User.updateOne({ _id: userData._id }, body), File.insertMany(fileData)]);
+        } else {
+            await User.updateOne({ _id: userData._id }, body);
         }
-
-        if (file.adharFile) {
-            const aadharFile = File({ path: file.adharFile[0].path, user: userData._id });
-            fileData.push(aadharFile);
-            body.aadharCard = aadharFile._id;
-        }
-
-        if (file.certificate) {
-            const certificateFile = File({ path: file.certificate[0].path, user: userData._id });
-            fileData.push(certificateFile);
-            body.certificate = certificateFile._id;
-        }
-
-        await Promise.all([User.updateOne({ _id: userData._id }, body), File.insertMany(fileData)]);
 
         return res.json({ msg: "user updated" });
 
