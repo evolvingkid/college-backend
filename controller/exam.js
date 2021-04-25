@@ -20,17 +20,71 @@ exports.createExam = async (req, res) => {
         return res.json({ msg: "Exam Added", data: examData });
 
     } catch (error) {
-        
+
         return res.status(500).json({ msg: "Error Occured" })
     }
 }
 
 exports.examList = async (req, res) => {
 
-    const query = req.query;
+    try {
+        const query = req.query;
 
-    const examData = await Exam.find(query)
-    .populate("batch").populate("course");
+        const examData = await Exam.find(query)
+            .populate("batch").populate("course");
 
-    return res.json({ data: examData });
+        return res.json({ data: examData });
+    } catch (error) {
+
+        return res.status(500).json({ msg: "Error Occured" });
+
+    }
+}
+
+exports.examEdit = async (req, res) => {
+
+    try {
+        let exam = req.body;    
+        const examData = req.examData;
+
+        exam.batch = examData.batch;
+        exam.date = examData.date;
+        exam.isActive = examData.isActive;
+        exam.type = examData.type;
+        exam.isCancelled = examData.isCancelled;
+
+        await Exam.updateOne({ _id: examData._id }, exam);
+
+        return res.json({ msg: " Exam is updated" });
+
+    } catch (error) {
+
+        return res.json({ error: "Error Occured" });
+
+    }
+
+}
+
+
+exports.examByID = async (req, res, next, id) => {
+
+    try {
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(406).json({ status: false, msg: "This exam is not acceptable" });
+        }
+
+        const examData = await Exam.findOne({ _id: id });
+
+        if (!examData) return res.status(401).json({
+            msg: "This exam doesn't exist"
+        });
+
+        req.examData = examData;
+
+        next();
+    } catch (error) {
+
+        return res.status(500).json({ status: false, msg: "Error occured" });
+    }
+
 }

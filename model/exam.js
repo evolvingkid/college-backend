@@ -16,7 +16,13 @@ const examModel = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'courseModel',
     },
-    isActive: { type: Boolean },
+    isActive: { type: Boolean, default: false },
+    isCancelled: { type: Boolean, default: false },
+    type : {
+        type: String,
+        enum : ['Writtern Exam', 'Lab Exam'],
+        default : "Writtern Exam"
+    }
 });
 
 examModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });

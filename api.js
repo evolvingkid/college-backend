@@ -27,6 +27,7 @@ const examRoute = require('./routes/exam');
 const seatArragement = require('./routes/seatArragement');
 const websiteHome = require('./routes/website/websiteHome');
 const websiteCoreData = require('./routes/website/websiteCoreData');
+const websiteCoreListData = require('./routes/website/webiteListCoreData');
 
 
 app.get('/', (req, res) => res.send('College API Running'));
@@ -43,5 +44,6 @@ app.use('/api/exam', examRoute);
 app.use('/api/seatarragement', seatArragement);
 app.use('/api/website/home', websiteHome);
 app.use('/api/webiste/coredata', websiteCoreData);
+app.use('/api/webiste/coredatalist', websiteCoreListData);
 
 module.exports = app;
