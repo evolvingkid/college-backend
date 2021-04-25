@@ -44,7 +44,7 @@ exports.examList = async (req, res) => {
 exports.examEdit = async (req, res) => {
 
     try {
-        let exam = req.body;    
+        let exam = req.body;
         const examData = req.examData;
 
         exam.batch = examData.batch;
@@ -56,6 +56,24 @@ exports.examEdit = async (req, res) => {
         await Exam.updateOne({ _id: examData._id }, exam);
 
         return res.json({ msg: " Exam is updated" });
+
+    } catch (error) {
+
+        return res.json({ error: "Error Occured" });
+
+    }
+
+}
+
+exports.examCancel = async (req, res) => {
+
+    try {
+
+        const examData = req.examData;
+
+        await Exam.updateOne({ _id: examData._id }, { isCancelled: false });
+
+        return res.json({msg : "Exam canceled"});
 
     } catch (error) {
 
