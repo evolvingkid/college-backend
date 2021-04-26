@@ -1,9 +1,8 @@
 const CoreDATA = require("../../model/website/websiteCoreData");
 const { mongoDB } = require("../../error/mongoDB");
-const Department = require('../../model/department');
-const Course = require('../../model/course');
-const Program = require('../../model/program');
-
+const Department = require("../../model/department");
+const Course = require("../../model/course");
+const Program = require("../../model/program");
 
 exports.addCoreData = async (req, res) => {
   try {
@@ -51,17 +50,32 @@ exports.listCoreData = async (req, res) => {
   try {
     const query = req.query;
 
-    if(query.page === 1){
+    if (query.page === 1) {
+      const [
+        courseData,
+        departmentData,
+        programData,
+        coreData,
+      ] = await Promise.all([
+        Course.find(),
+        Department.find(),
+        Program.find(),
+        CoreDATA.find(query),
+      ]);
 
-      const [courseData, departmentData, programData, coreData] = await Promise.all([Course.find(), Department.find(), Program.find(), CoreDATA.find(query)]);
-
-      return res.json({data : { coreData : coreData, department : departmentData, program: programData, course: courseData  } });
-      
+      return res.json({
+        data: {
+          coreData: coreData,
+          department: departmentData,
+          program: programData,
+          course: courseData,
+        },
+      });
     }
-  
+
     const coreData = await CoreDATA.find(query);
 
-    res.json({ data: {coreData : coreData} });
+    res.json({ data: { coreData: coreData } });
   } catch (error) {
     return res.status(500).json({
       error: "Error Occured",
