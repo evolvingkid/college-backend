@@ -1,20 +1,43 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const { addCoreData, listCoreData, coreDataByID, updateCoreData } = require('../../controller/website/websiteCoreData');
-const { jwtAuthVerification } = require('../../controller/auth');
-const { websitemanage } = require('../../auth/website');
-const { websiteCoreDataCreationValidation } = require('../../validation/websteCoreData');
-const { fileUpload } = require('../../config/fileUpload');
+const {
+  addCoreData,
+  listCoreData,
+  coreDataByID,
+  updateCoreData,
+  deleteCoreData,
+} = require("../../controller/website/websiteCoreData");
 
-router.post('/', fileUpload.fields([{ name: 'data[img]', maxCount: 1 }]),
-    jwtAuthVerification, websitemanage, websiteCoreDataCreationValidation, addCoreData);
+const { jwtAuthVerification } = require("../../controller/auth");
+const { websitemanage } = require("../../auth/website");
+const {
+  websiteCoreDataCreationValidation,
+} = require("../../validation/websteCoreData");
+const { fileUpload } = require("../../config/fileUpload");
 
-router.get('/', listCoreData);
+router.post(
+  "/",
+  fileUpload.fields([{ name: "data[img]", maxCount: 1 }]),
+  jwtAuthVerification,
+  websitemanage,
+  websiteCoreDataCreationValidation,
+  addCoreData
+);
 
-router.patch('/:coredata', fileUpload.fields([{ name: 'data[img]', maxCount: 1 }]),
-    jwtAuthVerification, websitemanage, updateCoreData);
+router.get("/", listCoreData);
 
-router.param('coredata', coreDataByID);
+router.patch(
+  "/:coredata",
+  fileUpload.fields([{ name: "data[img]", maxCount: 1 }]),
+  jwtAuthVerification,
+  websitemanage,
+  updateCoreData
+);
+
+router.delete("/:coredata", jwtAuthVerification, websitemanage, deleteCoreData);
+
+router.param("coredata", coreDataByID);
 
 module.exports = router;
+
