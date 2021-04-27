@@ -1,129 +1,102 @@
-
-const ExamHall = require('../model/examhall');
-const { mainUserEnums } = require('../config/enums');
+const ExamHall = require("../model/examhall");
+const { mainUserEnums } = require("../config/enums");
 
 exports.createExamHall = async (req, res) => {
+  try {
+    const body = req.body;
 
-    try {
-
-        const body = req.body;
-
-        if (!body.usedCount) {
-            body.usedCount = body.maxCount;
-        }
-
-        const examHall = ExamHall(body);
-
-        await examHall.save();
-
-        return res.status(201).json({
-            msg: "exam hall Created",
-            data: examHall,
-        });
-    } catch (error) {
-
-        if (error.errors.name) {
-            return res.status(403).json({
-                msg: error.errors.name.properties.message
-            });
-        }
-
-        return res.status(500).json({ msg: "Error Occured" });
-
+    if (!body.usedCount) {
+      body.usedCount = body.maxCount;
     }
 
-}
+    const examHall = ExamHall(body);
 
+    await examHall.save();
+
+    return res.status(201).json({
+      msg: "exam hall Created",
+      data: examHall,
+    });
+  } catch (error) {
+    if (error.errors.name) {
+      return res.status(403).json({
+        msg: error.errors.name.properties.message,
+      });
+    }
+
+    return res.status(500).json({ msg: "Error Occured" });
+  }
+};
 
 exports.examHallList = async (req, res) => {
+  try {
+    const examHallData = await ExamHall.find();
 
-    try {
-        const examHallData = await ExamHall.find();
-
-        return res.json({ data: examHallData });
-    } catch (error) {
-        return res.status(500).json({ msg: "Error Occured" });
-    }
-
-}
+    return res.json({ data: examHallData });
+  } catch (error) {
+    return res.status(500).json({ msg: "Error Occured" });
+  }
+};
 
 exports.examHallEdit = async (req, res) => {
+  try {
+    const { name, maxcount, usedcount } = req.body;
+    let databaseBody = {};
 
-    try {
-
-        const { name, maxcount, usedcount } = req.body;
-        let databaseBody = {};
-
-        if (name) {
-            databaseBody['name'] = name;
-        }
-
-        if (maxcount) {
-            databaseBody['maxCount'] = maxcount;
-        }
-
-        if (usedcount) {
-            databaseBody['usedCount'] = usedcount;
-        }
-
-        const examID = req.examhall._id;
-        await ExamHall.updateOne({ _id: examID }, { $set: databaseBody });
-
-
-        return res.json({
-            msg: "ExamHall updated"
-        });
-
-
-    } catch (error) {
-
-        return res.status(500).json({ msg: "error Occured" });
+    if (name) {
+      databaseBody["name"] = name;
     }
 
+    if (maxcount) {
+      databaseBody["maxCount"] = maxcount;
+    }
 
-}
+    if (usedcount) {
+      databaseBody["usedCount"] = usedcount;
+    }
 
+    const examID = req.examhall._id;
+    await ExamHall.updateOne({ _id: examID }, { $set: databaseBody });
+
+    return res.json({
+      msg: "ExamHall updated",
+    });
+  } catch (error) {
+    return res.status(500).json({ msg: "error Occured" });
+  }
+};
 
 exports.examHallDelete = async (req, res) => {
+  try {
+    const examHallID = req.examhall._id;
+    await ExamHall.deleteOne({ _id: examHallID });
 
-    try {
-
-        const examHallID = req.examhall._id;
-        await ExamHall.deleteOne({ _id: examHallID });
-
-        return res.json({ msg: "Examhall Deleted" });
-
-    } catch (error) {
-
-        return res.status(500).json({ msg: "Error Occured", status: false });
-    }
-
-
-}
-
+    return res.json({ msg: "Examhall Deleted" });
+  } catch (error) {
+    return res.status(500).json({ msg: "Error Occured", status: false });
+  }
+};
 
 exports.examhallByID = async (req, res, next, id) => {
-
-    try {
-
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(406).json({ status: false, msg: "This ExamHall is not acceptable" });
-        }
-
-        const examHall = await ExamHall.findOne({ _id: id });
-
-        if (!examHall) return res.status(401).json({
-            msg: "This ExamHall doesn't exist"
-        });
-
-        req.examhall = examHall;
-
-        next();
-
-    } catch (error) {
-
-        return res.status(500).json({ msg: "error Occured" });
-
+  try {
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res
+        .status(406)
+        .json({ status: false, msg: "This ExamHall is not acceptable" });
     }
 
-}
+    const examHall = await ExamHall.findOne({ _id: id });
+
+    if (!examHall)
+      return res.status(401).json({
+        msg: "This ExamHall doesn't exist",
+      });
+
+    req.examhall = examHall;
+
+    next();
+  } catch (error) {
+    return res.status(500).json({ msg: "error Occured" });
+  }
+};
+

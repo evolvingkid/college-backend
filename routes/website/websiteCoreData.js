@@ -40,4 +40,3 @@ router.delete("/:coredata", jwtAuthVerification, websitemanage, deleteCoreData);
 router.param("coredata", coreDataByID);
 
 module.exports = router;
-

@@ -10,7 +10,6 @@ exports.addCoreData = async (req, res) => {
     body.indentifier.trim();
     const files = req.files;
 
-    // to take multipart data
     if (files) {
       body.data.img = files["data[img]"][0].path;
     }
@@ -21,14 +20,11 @@ exports.addCoreData = async (req, res) => {
       coreData.type === "SINGLEDATA" ||
       coreData.type === "COLLECTIONOFDATA"
     ) {
-      // for collection data and single data
       coreData.link = `webiste/coredata?indentifier=${body.indentifier}`;
     }
 
     if (coreData.type === "PAGES") {
-      // for page data since we need to indentify it before the core data find query
-      // so that every data can be loaded async
-      coreData.link = `webiste/coredata?indentifier=${body.indentifier}&type=PAGES`;
+      coreData.link = `webiste/coredata?indentifier=${body.indentifier}?ispage=1`;
     }
 
     await coreData.save();
@@ -54,16 +50,18 @@ exports.listCoreData = async (req, res) => {
   try {
     const query = req.query;
 
-    if (query.type === "PAGES") {
-      //* view core data from webpages
-      //since page needed these data these are shown outside
-
+    if (query.page === 1) {
       const [
         courseData,
-        programData,
         departmentData,
+        programData,
         coreData,
-      ] = await getDataFromPages(query);
+      ] = await Promise.all([
+        Course.find(),
+        Department.find(),
+        Program.find(),
+        CoreDATA.find(query),
+      ]);
 
       return res.json({
         data: {
@@ -93,7 +91,6 @@ exports.updateCoreData = async (req, res) => {
     const files = req.files;
 
     if (files) {
-      // because of undefined error occured idf update dont have title or body
       if (body.data === undefined) {
         body["data"] = {};
         body.data.title = core.title;
@@ -102,7 +99,7 @@ exports.updateCoreData = async (req, res) => {
 
       body["data"]["img"] = files["data[img]"][0].path;
     }
-    // cant change indentifier in any way once it is set it cannot be edited
+
     if (body.indentifier) {
       body.indentifier = core.indentifier;
     }
@@ -156,19 +153,3 @@ exports.coreDataByID = async (req, res, next, id) => {
     return res.status(500).json({ msg: "Error Occured" });
   }
 };
-
-async function getDataFromPages(query) {
-  const pageData = await Promise.all([
-    Course.find(),
-    Department.find(),
-    Program.find(),
-    CoreDATA.find(query).populate({
-      path: "collectionOfDatas.data",
-      populate: {
-        path: "collectionOfDatas.data",
-      },
-    }),
-  ]);
-
-  return pageData;
-}
