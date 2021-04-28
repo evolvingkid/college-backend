@@ -29,6 +29,7 @@ const examRoute = require("./routes/exam");
 const seatArragement = require("./routes/seatArragement");
 const websiteCoreData = require("./routes/website/websiteCoreData");
 const FileRoute = require("./routes/file");
+const BannerRoute = require("./routes/website/banner");
 
 app.get("/", (req, res) => res.send("College API Running"));
 app.use("/api/auth", authRoutes);
@@ -44,4 +45,5 @@ app.use("/api/exam", examRoute);
 app.use("/api/seatarragement", seatArragement);
 app.use("/api/webiste/coredata", websiteCoreData);
 app.use("/api/file", FileRoute);
+app.use("/api/website/banner", BannerRoute);
 module.exports = app;
