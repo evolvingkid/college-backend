@@ -38,9 +38,7 @@ const CoreDATA = new mongoose.Schema({
       },
     },
   ],
-  feildName: {
-    type: String,
-  },
+  requiredFeilds: [{ type: String }],
   type: {
     type: String,
     enum: [

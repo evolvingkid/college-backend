@@ -21,9 +21,3 @@ exports.userPermissionEnums = {
   websiteMange: "websiteManage",
   examManage: "examManage",
 };
-
-exports.enumTypeForWebsite = {
-  website: "WEBSITE",
-  singleData: "SINGLEDATA",
-};
-

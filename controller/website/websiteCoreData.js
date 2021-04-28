@@ -3,6 +3,7 @@ const { mongoDB } = require("../../error/mongoDB");
 const Department = require("../../model/department");
 const Course = require("../../model/course");
 const Program = require("../../model/program");
+const File = require("../../model/file");
 
 exports.addCoreData = async (req, res) => {
   try {
@@ -58,27 +59,16 @@ exports.listCoreData = async (req, res) => {
       //* view core data from webpages
       //since page needed these data these are shown outside
 
-      const [
-        courseData,
-        programData,
-        departmentData,
-        coreData,
-      ] = await getDataFromPages(query);
+      const pageData = await getDataFromPages(query);
 
-      return res.json({
-        data: {
-          coreData: coreData,
-          department: departmentData,
-          program: programData,
-          course: courseData,
-        },
-      });
+      return res.json({ data: pageData });
     }
 
     const coreData = await CoreDATA.find(query);
 
     res.json({ data: { coreData: coreData } });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       error: "Error Occured",
     });
@@ -158,10 +148,24 @@ exports.coreDataByID = async (req, res, next, id) => {
 };
 
 async function getDataFromPages(query) {
-  const pageData = await Promise.all([
+  const [
+    courseData,
+    departmentData,
+    programData,
+    fileData,
+    navBarData,
+    coreData,
+  ] = await Promise.all([
     Course.find(),
     Department.find(),
     Program.find(),
+    File.find(),
+    CoreDATA.findOne({ indentifier: "NavBar" }).populate({
+      path: "collectionOfDatas.data",
+      populate: {
+        path: "collectionOfDatas.data",
+      },
+    }),
     CoreDATA.find(query).populate({
       path: "collectionOfDatas.data",
       populate: {
@@ -170,5 +174,30 @@ async function getDataFromPages(query) {
     }),
   ]);
 
-  return pageData;
+  let reqFeild = {
+    Department: departmentData,
+    course: courseData,
+    program: programData,
+    File: fileData,
+  };
+
+  let fileResponce = {};
+
+  fileResponce["coreData"] = coreData;
+  // required feild managing
+  const requiredFeild = coreData[0].requiredFeilds;
+
+  if (requiredFeild) {
+    for (i = 0; i < requiredFeild.length; i++) {
+      if (reqFeild.hasOwnProperty(requiredFeild[i])) {
+        fileResponce[requiredFeild[i]] = reqFeild[requiredFeild[i]];
+      }
+    }
+  }
+
+  if (requiredFeild.includes("NavBar")) {
+    fileResponce["NavBar"] = navBarData;
+  }
+
+  return fileResponce;
 }
