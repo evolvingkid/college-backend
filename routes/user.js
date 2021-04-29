@@ -1,24 +1,54 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 uuidv4();
 
-const { listUsers, userByID, deleteUser, userPasswordChange, listTeachers, studentList, userEdit } = require('../controller/user');
-const { jwtAuthVerification } = require('../controller/auth');
-const { passwordvalidation } = require('../validation/auth');
-const { userManagePermission, userReadPermission } = require('../auth/user');
-const multer = require('multer');
-const { fileUpload } = require('../config/fileUpload');
+const {
+  listUsers,
+  userByID,
+  deleteUser,
+  userPasswordChange,
+  listTeachers,
+  studentList,
+  userEdit,
+} = require("../controller/user");
+const { jwtAuthVerification } = require("../controller/auth");
+const { passwordvalidation } = require("../validation/auth");
+const { userManagePermission, userReadPermission } = require("../auth/user");
+const multer = require("multer");
+const { fileUpload } = require("../config/fileUpload");
+const { getUserData } = require("../controller/user/userDetails");
 
-router.get('/', jwtAuthVerification, userReadPermission, listUsers);
-router.get('/teacher', jwtAuthVerification, userReadPermission, listTeachers);
-router.get('/student', jwtAuthVerification, userReadPermission, studentList);
-router.delete('/:userByID', jwtAuthVerification, userManagePermission, deleteUser);
-router.patch('/passwordchange', jwtAuthVerification, passwordvalidation, userPasswordChange);
-router.patch('/:userByID', jwtAuthVerification, userManagePermission,
-    fileUpload.fields([{ name: 'profilePic', maxCount: 1 }, { name: 'adharFile', maxCount: 1 }, { name: 'certificate', maxCount: 5 }]),
-    userEdit);
+router.get("/", jwtAuthVerification, userReadPermission, listUsers);
+router.get("/teacher", jwtAuthVerification, userReadPermission, listTeachers);
+router.get("/student", jwtAuthVerification, userReadPermission, studentList);
+router.delete(
+  "/:userByID",
+  jwtAuthVerification,
+  userManagePermission,
+  deleteUser
+);
+router.patch(
+  "/passwordchange",
+  jwtAuthVerification,
+  passwordvalidation,
+  userPasswordChange
+);
+router.patch(
+  "/:userByID",
+  jwtAuthVerification,
+  userManagePermission,
+  fileUpload.fields([
+    { name: "profilePic", maxCount: 1 },
+    { name: "adharFile", maxCount: 1 },
+    { name: "certificate", maxCount: 5 },
+  ]),
+  userEdit
+);
+
+router.get("/:userByID", jwtAuthVerification, userReadPermission, getUserData);
 
 router.param("userByID", userByID);
 
 module.exports = router;
+

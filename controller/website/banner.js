@@ -18,7 +18,6 @@ exports.bannerCreation = async (req, res) => {
 
     return res.json({ data: bannerData });
   } catch (error) {
-    console.log(error);
     return res.json({ error: "Error Occured" });
   }
 };
@@ -50,14 +49,14 @@ exports.bannerByID = async (req, res, next, id) => {
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res
         .status(406)
-        .json({ status: false, msg: "This ExamHall is not acceptable" });
+        .json({ status: false, msg: "This Banner is not acceptable" });
     }
 
     const bannerData = await Banner.findOne({ _id: id });
 
     if (!bannerData)
       return res.status(401).json({
-        msg: "This ExamHall doesn't exist",
+        msg: "This Banner doesn't exist",
       });
 
     req.banner = bannerData;
