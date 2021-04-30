@@ -19,7 +19,8 @@ exports.listUsers = async (req, res) => {
 
     const userData = await User.find(query)
       .populate("student")
-      .populate("employee");
+      .populate("employee")
+      .populate("profilePic");
 
     for (let index = 0; index < userData.length; index++) {
       userData[index].hashed_password = undefined;

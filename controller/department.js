@@ -30,9 +30,14 @@ exports.listDepartment = async (req, res) => {
   try {
     const departmentData = await Department.find().populate({
       path: "hods.hod",
-      populate: {
-        path: "employee",
-      },
+      populate: [
+        {
+          path: "profilePic",
+        },
+        {
+          path: "employee",
+        },
+      ],
     });
 
     return res.json({
@@ -103,11 +108,15 @@ exports.departmentByID = async (req, res, next, id) => {
 
     const departmentData = await Department.findOne({ _id: id }).populate({
       path: "hods.hod",
-      populate: {
-        path: "employee",
-      },
+      populate: [
+        {
+          path: "profilePic",
+        },
+        {
+          path: "employee",
+        },
+      ],
     });
-
     if (!departmentData)
       return res.status(401).json({
         msg: "This Department doesn't exist",
