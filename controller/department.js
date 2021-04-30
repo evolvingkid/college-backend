@@ -1,8 +1,5 @@
-const { mainUserEnums } = require("../config/enums");
 const Department = require("../model/department");
-const { deleteProgramByParentTable } = require("../controller/program");
-const Program = require("../model/program");
-const Course = require("../model/course");
+const { deleteDeapartmentServices } = require("../services/departmentServices");
 
 exports.createDepartment = async (req, res) => {
   try {
@@ -74,34 +71,7 @@ exports.departmentDelete = async (req, res) => {
     const department = req.department;
     console.log(department._id);
 
-    let programData = await Program.find({ departmentID: department._id });
-
-    console.log(programData);
-
-    let courseQuery = [];
-    for (let index = 0; index < programData.length; index++) {
-      courseQuery[index] = { program: programData[index]._id };
-    }
-
-    console.log(courseQuery);
-
-    if (courseQuery.length) {
-      await Promise.all([
-        Course.deleteMany({ $or: courseQuery }),
-        Program.deleteMany({ departmentID: department._id }),
-        Department.deleteMany({ _id: req.department._id }),
-      ]);
-
-      return res.json({
-        status: true,
-        msg: "Department Deleted",
-      });
-    }
-
-    await Promise.all([
-      Program.deleteMany({ departmentID: department._id }),
-      Department.deleteMany({ _id: req.department._id }),
-    ]);
+    await deleteDeapartmentServices(department, req);
 
     return res.json({
       status: true,
@@ -145,4 +115,3 @@ exports.departmentByID = async (req, res, next, id) => {
     return res.status(500).json({ status: false, msg: "Error occured" });
   }
 };
-

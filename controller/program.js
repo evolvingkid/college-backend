@@ -1,24 +1,14 @@
 const Program = require("../model/program");
 const Course = require("../model/course");
 
+const { createProgramWithCourse } = require("../services/departmentServices");
+
 exports.createProgram = async (req, res) => {
   try {
     let body = req.body;
 
     if (body.course) {
-      let courseData = [];
-      for (let index = 0; index < body.course.length; index++) {
-        courseData[index] = Course(body.course[index]);
-      }
-      body.course = courseData;
-      const programData = Program(body);
-
-      for (let index = 0; index < body.course.length; index++) {
-        courseData[index].program = programData._id;
-      }
-      body.course = courseData;
-
-      await Promise.all([Course.insertMany(body.course), programData.save()]);
+      let programData = await createProgramWithCourse(body);
 
       return res.status(201).json({
         msg: "The program is created",
@@ -121,4 +111,3 @@ exports.deleteProgramByParentTable = async (query) => {
     throw error;
   }
 };
-

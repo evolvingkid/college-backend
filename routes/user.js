@@ -1,54 +1,58 @@
 const express = require("express");
 const router = express.Router();
-const { v4: uuidv4 } = require("uuid");
-uuidv4();
 
+// get users data
 const {
+  getUserData,
   listUsers,
-  userByID,
+  userEdit,
   deleteUser,
   userPasswordChange,
-  listTeachers,
-  studentList,
-  userEdit,
-} = require("../controller/user");
+  userByID,
+} = require("../controller/user/users");
+const { studentList } = require("../controller/user/student");
+const { listTeachers } = require("../controller/user/teachers");
+// authirisation Data
 const { jwtAuthVerification } = require("../controller/auth");
 const { passwordvalidation } = require("../validation/auth");
+// permissions
 const { userManagePermission, userReadPermission } = require("../auth/user");
-const multer = require("multer");
+// externals
 const { fileUpload } = require("../config/fileUpload");
-const { getUserData } = require("../controller/user/userDetails");
 
+// get methods
 router.get("/", jwtAuthVerification, userReadPermission, listUsers);
 router.get("/teacher", jwtAuthVerification, userReadPermission, listTeachers);
 router.get("/student", jwtAuthVerification, userReadPermission, studentList);
+router.get("/:userByID", jwtAuthVerification, userReadPermission, getUserData);
+// DELETE Methods
 router.delete(
   "/:userByID",
   jwtAuthVerification,
   userManagePermission,
   deleteUser
 );
+// PATCH methods
 router.patch(
   "/passwordchange",
   jwtAuthVerification,
   passwordvalidation,
   userPasswordChange
 );
+// user file uploads
+const userFileUploads = [
+  { name: "profilePic", maxCount: 1 },
+  { name: "adharFile", maxCount: 1 },
+  { name: "certificate", maxCount: 5 },
+];
 router.patch(
   "/:userByID",
   jwtAuthVerification,
   userManagePermission,
-  fileUpload.fields([
-    { name: "profilePic", maxCount: 1 },
-    { name: "adharFile", maxCount: 1 },
-    { name: "certificate", maxCount: 5 },
-  ]),
+  fileUpload.fields(userFileUploads),
   userEdit
 );
-
-router.get("/:userByID", jwtAuthVerification, userReadPermission, getUserData);
 
 router.param("userByID", userByID);
 
 module.exports = router;
-
