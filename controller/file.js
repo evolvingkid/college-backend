@@ -39,6 +39,12 @@ exports.fileDelete = async (req, res) => {
   }
 };
 
+exports.sendFile = async (req, res) => {
+  const fileData = req.fileData;
+
+  return res.sendFile(__dirname + fileData.path);
+};
+
 exports.fileByID = async (req, res, next, id) => {
   try {
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {

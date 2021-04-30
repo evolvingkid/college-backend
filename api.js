@@ -4,6 +4,7 @@ var cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const expressValidator = require("express-validator");
+const path = require("path");
 
 app.use(
   express.json({
@@ -46,4 +47,6 @@ app.use("/api/seatarragement", seatArragement);
 app.use("/api/webiste/coredata", websiteCoreData);
 app.use("/api/file", FileRoute);
 app.use("/api/website/banner", BannerRoute);
+app.use("/uploads", express.static("uploads"));
+
 module.exports = app;

@@ -2,8 +2,6 @@ const User = require("../../model/user");
 
 const bcrypt = require("bcrypt");
 const Student = require("../../model/student");
-const { json } = require("body-parser");
-const mongoose = require("mongoose");
 const File = require("../../model/file");
 const { mongoDB } = require("../../error/mongoDB");
 

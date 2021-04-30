@@ -41,7 +41,8 @@ exports.createProgram = async (req, res) => {
 
 exports.listProgram = async (req, res) => {
   try {
-    const programData = await Program.find()
+    const query = req.query;
+    const programData = await Program.find(query)
       .populate({
         path: "department",
         populate: {
