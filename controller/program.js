@@ -91,7 +91,14 @@ exports.programByID = async (req, res, next, id) => {
         .json({ status: false, msg: "This program is not acceptable" });
     }
 
-    const programData = await Program.findOne({ _id: id });
+    const programData = await Program.findOne({ _id: id })
+      .populate({
+        path: "department",
+        populate: {
+          path: "hods.hod",
+        },
+      })
+      .populate("course");
 
     if (!programData)
       return res.status(403).json({ status: false, msg: "program not found" });
