@@ -101,7 +101,12 @@ exports.departmentByID = async (req, res, next, id) => {
         .json({ status: false, msg: "This Department is not acceptable" });
     }
 
-    const departmentData = await Department.findOne({ _id: id });
+    const departmentData = await Department.findOne({ _id: id }).populate({
+      path: "hods.hod",
+      populate: {
+        path: "employee",
+      },
+    });
 
     if (!departmentData)
       return res.status(401).json({
