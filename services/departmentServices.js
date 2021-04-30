@@ -2,7 +2,7 @@ const Program = require("../model/program");
 const Course = require("../model/course");
 const Department = require("../model/department");
 
-exports.deleteDeapartmentServices = async (department) => {
+exports.deleteDeapartmentServices = async (department, req) => {
   let programData = await Program.find({ departmentID: department._id });
 
   let courseQuery = [];

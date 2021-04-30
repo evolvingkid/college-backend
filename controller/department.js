@@ -71,7 +71,7 @@ exports.departmentDelete = async (req, res) => {
     const department = req.department;
     console.log(department._id);
 
-    await deleteDeapartmentServices(department);
+    await deleteDeapartmentServices(department, req);
 
     return res.json({
       status: true,

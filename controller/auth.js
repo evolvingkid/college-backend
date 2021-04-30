@@ -11,8 +11,10 @@ exports.signup = async (req, res) => {
   try {
     let body = req.body;
     let userData;
+    console.log("user");
+
     if (body.userType === "Student") {
-      userData = await createStudentServices(body, req);
+      userData = await createStudentServices(req, body);
     }
 
     if (body.userType === "Employee") {
@@ -121,4 +123,3 @@ exports.jwtAuthVerification = async (req, res, next) => {
     }
   });
 };
-
