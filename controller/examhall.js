@@ -43,20 +43,8 @@ exports.examHallEdit = async (req, res) => {
     const { name, maxcount, usedcount } = req.body;
     let databaseBody = {};
 
-    if (name) {
-      databaseBody["name"] = name;
-    }
-
-    if (maxcount) {
-      databaseBody["maxCount"] = maxcount;
-    }
-
-    if (usedcount) {
-      databaseBody["usedCount"] = usedcount;
-    }
-
     const examID = req.examhall._id;
-    await ExamHall.updateOne({ _id: examID }, { $set: databaseBody });
+    await ExamHall.updateOne({ _id: examID }, databaseBody);
 
     return res.json({
       msg: "ExamHall updated",
@@ -79,7 +67,6 @@ exports.examHallDelete = async (req, res) => {
 
 exports.examhallByID = async (req, res, next, id) => {
   try {
-    console.log(id);
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res
         .status(406)
