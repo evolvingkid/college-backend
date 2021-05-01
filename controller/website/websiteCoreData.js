@@ -185,7 +185,7 @@ async function getDataFromPages(query) {
 
   fileResponce["coreData"] = coreData;
   // required feild managing
-  const requiredFeild = coreData[0].requiredFeilds;
+  const requiredFeild = coreData.requiredFeilds;
 
   if (requiredFeild) {
     for (i = 0; i < requiredFeild.length; i++) {
