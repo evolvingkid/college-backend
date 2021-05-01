@@ -166,7 +166,7 @@ async function getDataFromPages(query) {
         path: "collectionOfDatas.data",
       },
     }),
-    CoreDATA.find(query).populate({
+    CoreDATA.findOne(query).populate({
       path: "collectionOfDatas.data",
       populate: {
         path: "collectionOfDatas.data",

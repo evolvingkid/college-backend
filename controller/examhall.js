@@ -79,6 +79,7 @@ exports.examHallDelete = async (req, res) => {
 
 exports.examhallByID = async (req, res, next, id) => {
   try {
+    console.log(id);
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res
         .status(406)
@@ -99,4 +100,3 @@ exports.examhallByID = async (req, res, next, id) => {
     return res.status(500).json({ msg: "error Occured" });
   }
 };
-
