@@ -40,8 +40,7 @@ exports.examHallList = async (req, res) => {
 
 exports.examHallEdit = async (req, res) => {
   try {
-    const { name, maxcount, usedcount } = req.body;
-    let databaseBody = {};
+    const databaseBody = req.body;
 
     const examID = req.examhall._id;
     await ExamHall.updateOne({ _id: examID }, databaseBody);
