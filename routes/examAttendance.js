@@ -4,8 +4,12 @@ const router = express.Router();
 const { jwtAuthVerification } = require("../controller/auth");
 const { examManagePermission } = require("../auth/exam");
 const { examhallByID } = require("../controller/examhall");
-const { markExamAtteance } = require("../controller/examAttendance");
+const {
+  markExamAtteance,
+  attendanceMark,
+} = require("../controller/examAttendance");
 const { attendanceExamValidation } = require("../validation/seatArragement");
+const { courseByID } = require("../controller/course");
 
 router.post(
   "/:examHallID",
@@ -15,6 +19,14 @@ router.post(
   markExamAtteance
 );
 
+router.get(
+  "/:examHallID/course/:courseID",
+  jwtAuthVerification,
+  examManagePermission,
+  attendanceMark
+);
+
 router.param("examHallID", examhallByID);
+router.param("courseID", courseByID);
 
 module.exports = router;
