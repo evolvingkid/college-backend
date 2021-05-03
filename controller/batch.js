@@ -30,7 +30,12 @@ exports.listbatch = async (req, res) => {
   try {
     const query = req.query;
 
-    const batchData = await Batch.find(query).populate("program");
+    const batchData = await Batch.find(query).populate({
+      path: 'program',
+      populate: {
+        path: 'course'
+      }
+    });
 
     return res.json({ data: batchData });
   } catch (error) {
@@ -52,7 +57,13 @@ exports.batchByID = async (req, res, next, id) => {
         .json({ status: false, error: "This batch is not acceptable" });
     }
 
-    const batchData = await Batch.findOne({ _id: id }).populate("program");
+    const batchData = await Batch.findOne({ _id: id }).
+      populate({
+        path: 'program',
+        populate: {
+          path: 'course'
+        }
+      });
 
     if (!batchData)
       return res.status(403).json({
