@@ -5,7 +5,7 @@ const { jwtAuthVerification } = require("../../controller/auth");
 const { websitemanage } = require("../../auth/website");
 const { createNewsLetters, listNewLetter,
     publicListnewsLetter, newsLetterByID,
-    editNewsLetter } = require("../../controller/website/newsLetter");
+    editNewsLetter, deleteNewsLetter } = require("../../controller/website/newsLetter");
 const { fileUpload } = require("../../config/fileUpload");
 
 router.post("/", jwtAuthVerification, websitemanage,
@@ -14,9 +14,10 @@ router.post("/", jwtAuthVerification, websitemanage,
 router.get('/', jwtAuthVerification, websitemanage, listNewLetter);
 router.get('/public', publicListnewsLetter);
 router.patch('/:newsLetterID', jwtAuthVerification, websitemanage, editNewsLetter);
+router.delete('/:newsLetterID', jwtAuthVerification, websitemanage, deleteNewsLetter);
 
 
-router.param('newsLetterID', newsLetterByID)
+router.param('newsLetterID', newsLetterByID);
 
 
 module.exports = router;

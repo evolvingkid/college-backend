@@ -80,6 +80,15 @@ exports.editNewsLetter = async (req, res) => {
 };
 
 
+exports.deleteNewsLetter = async (req, res) => {
+
+    const newsLetterData = req.newsLetter;
+
+    await NewsLetter.deleteMany({ _id: newsLetterData._id });
+
+    return res.json({ msg: "News letter Deleted" });
+};
+
 
 exports.newsLetterByID = async (req, res, next, id) => {
     try {
