@@ -52,7 +52,7 @@ exports.batchByID = async (req, res, next, id) => {
         .json({ status: false, error: "This batch is not acceptable" });
     }
 
-    const batchData = await Batch.findOne({ _id: id });
+    const batchData = await Batch.findOne({ _id: id }).populate("program");
 
     if (!batchData)
       return res.status(403).json({

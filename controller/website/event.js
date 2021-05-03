@@ -70,7 +70,7 @@ exports.publicEventView = async (req, res) => {
 
         query.scheduleDate = { $lt: currentDate }; 
 
-        const eventData = await Events.findOne(query);
+        const eventData = await Events.find(query);
 
         return res.json({
             data: eventData
@@ -108,7 +108,7 @@ exports.editEvent = async (req, res) => {
 exports.eventDelete = async (req, res) => {
 
     try {
-
+        
         await Events.deleteMany({ _id: req.event._id });
         return res.json({
             status: true,

@@ -41,6 +41,7 @@ const eventRoute = require("./routes/website/event");
 const websiteCoreData = require("./routes/website/websiteCoreData");
 const BannerRoute = require("./routes/website/banner");
 const GalleryRoute = require("./routes/website/gallery");
+const NewsLettersRoute = require("./routes/website/newsLetters");
 
 
 // base
@@ -70,6 +71,7 @@ app.use("/api/event", eventRoute);
 app.use("/api/webiste/coredata", websiteCoreData);
 app.use("/api/website/banner", BannerRoute);
 app.use("/api/website/gallery", GalleryRoute);
+app.use("/api/website/newsletters", NewsLettersRoute)
 
 // upload
 app.use("/uploads", express.static("uploads"));
