@@ -2,9 +2,12 @@ const User = require("../../model/user");
 const mongoose = require("mongoose");
 const { mongoDB } = require("../../error/mongoDB");
 const { bulkCreationStudent } = require("../../services/studentServices");
+const program = require("../../model/program");
 exports.studentList = async (req, res) => {
   try {
     let studentData;
+
+    let { startingbatch, endingbatch, program, sem, batch } = req.query;
 
     let aggreateData = [
       {
@@ -61,13 +64,16 @@ exports.studentList = async (req, res) => {
 
     return res.json({ data: studentData });
   } catch (error) {
+    console.log(error);
     const errorMsg = mongoDB(error);
 
-    if (errorMsg.length) {
-      return res.status(403).json({
-        error: errorMsg[0],
-        errorMsgs: errorMsg,
-      });
+    if (errorMsg) {
+      if (errorMsg.length) {
+        return res.status(403).json({
+          error: errorMsg[0],
+          errorMsgs: errorMsg,
+        });
+      }
     }
 
     return res.status(500).json({
