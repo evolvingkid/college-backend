@@ -37,7 +37,7 @@ const ExamAnsSheetRoute = require("./routes/examAnsSheet");
 const examHallAttendance = require("./routes/examAttendance");
 
 // website
-const eventRoute = require("./routes/event");
+const eventRoute = require("./routes/website/event");
 const websiteCoreData = require("./routes/website/websiteCoreData");
 const BannerRoute = require("./routes/website/banner");
 const GalleryRoute = require("./routes/website/gallery");

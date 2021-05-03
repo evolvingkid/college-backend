@@ -13,24 +13,44 @@ const EventsModel = new mongoose.Schema({
     },
     title: {
         type: String,
-        required:true
+        required: true
     },
-    description:{
-        type:String,
-        required:true,
+    description: {
+        type: String,
+        required: true,
     },
-    department: { 
-        type: mongoose.Schema.Types.ObjectId , 
+    department: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Product"
     },
-    participants:[
+    scheduleDate: {
+        type: Date,
+        default: Date.now
+    },
+    isPrivate: {
+        type: Boolean,
+        default : false
+    },
+    image: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FileModel"
+    },
+    orginizers: [
         {
-            name:{
-                type:String,
-            },
-            value:{
-                type:Number
-            }
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user"
+        }
+    ],
+    participants: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user"
+        }
+    ],
+    exteranlPartcipants: [
+        {
+            name: { type: String },
+            contact: { type: String }
         }
     ]
 });
