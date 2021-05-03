@@ -12,4 +12,4 @@ router.delete("/:galleryID", jwtAuthVerification, websitemanage, deleteGallery);
 
 router.param("galleryID", galleryByID);
 
-module.exports = router;
+module.exports = router;    
