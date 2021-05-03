@@ -35,7 +35,8 @@ exports.createCourse = async (req, res) => {
 
 exports.courseList = async (req, res) => {
   try {
-    const courseData = await CourseModel.find()
+    const query = req.query;
+    const courseData = await CourseModel.find(query)
       .populate({
         path: "program",
         path: "teacher",
@@ -45,6 +46,7 @@ exports.courseList = async (req, res) => {
 
     return res.json({ data: courseData });
   } catch (error) {
+
     return res.status(500).json({ status: false, msg: "Error Occured" });
   }
 };

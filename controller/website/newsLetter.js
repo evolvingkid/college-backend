@@ -68,3 +68,38 @@ exports.publicListnewsLetter = async (req, res) => {
     }
 
 };
+
+exports.editNewsLetter = async (req, res) => {
+
+    const newsLetterData = req.newsLetter;
+    const body = req.body;
+
+    await NewsLetter.updateMany({ _id: newsLetterData._id }, body);
+
+    return res.json({ msg: " NewsLetter Edited" });
+};
+
+
+
+exports.newsLetterByID = async (req, res, next, id) => {
+    try {
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res
+                .status(406)
+                .json({ status: false, msg: "This newsLetter is not acceptable" });
+        }
+
+        const data = await NewsLetter.findOne({ _id: id });
+
+        if (!data)
+            return res.status(401).json({
+                msg: "This newsLetter doesn't exist",
+            });
+
+        req.newsLetter = data;
+
+        next();
+    } catch (error) {
+        return res.status(500).json({ msg: "error Occured" });
+    }
+};

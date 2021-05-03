@@ -24,6 +24,9 @@ const SeatArragementModel = new mongoose.Schema({
   isAttenadce: {
     type: Boolean,
   },
+  ansSheet: [
+    { type: String }
+  ]
 });
 
 SeatArragementModel.plugin(uniqueValidator, {
