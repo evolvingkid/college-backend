@@ -51,3 +51,73 @@ exports.createAttendanceDocument = async (date, courseData, examHallData) => {
 
   return attendanceMarkData;
 };
+
+
+exports.absentMarking = async (absent, date, present) => {
+
+  const examDate = new Date(date);
+
+  let aggreateData = [
+    {
+      $lookup: {
+        from: "users",
+        localField: "student",
+        foreignField: "_id",
+        as: "student",
+      },
+    },
+    { $match: { student: { $exists: true, $not: { $size: 0 } } } },
+    {
+      $lookup: {
+        from: "student",
+        localField: "student.student",
+        foreignField: "_id",
+        as: "student",
+      },
+    },
+    {
+      $match: { date: examDate }
+    }
+  ];
+
+
+
+  await Promise.all([absentMarking(absent, aggreateData),
+  studnetAnsMarking(present, aggreateData)]);
+
+  return "Marking is Done";
+
+
+};
+
+
+async function absentMarking(absent, aggreateData) {
+
+  let studentData;
+  for (let index = 0; index < absent.length; index++) {
+
+    aggreateData.push({
+      $match: { "student.rollno": absent[index] }
+    });
+
+    aggreateData.push({ $set: { isAttenadce: false } })
+    
+    studentData = await SeatArragement.aggregate(aggreateData);
+
+  }
+}
+
+async function studnetAnsMarking(present, aggreateData) {
+
+  for (let index = 0; index < present.length; index++) {
+
+    aggreateData.push({
+      $match: { "student.rollno": present[index].rollNo }
+    });
+
+    aggreateData.push({ $set: { ansSheet: present[index].paper } });
+
+    await SeatArragement.aggregate(aggreateData);
+  }
+
+}

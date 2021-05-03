@@ -12,7 +12,7 @@ const { attendanceExamValidation } = require("../validation/seatArragement");
 const { courseByID } = require("../controller/course");
 
 router.post(
-  "/:examHallID",
+  "/",
   jwtAuthVerification,
   examManagePermission,
   attendanceExamValidation,

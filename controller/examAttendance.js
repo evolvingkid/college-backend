@@ -1,26 +1,16 @@
 const SeatArragement = require("../model/seatArragement");
-const { createAttendanceDocument } = require("../services/attendanceServices");
+const { createAttendanceDocument, absentMarking } = require("../services/attendanceServices");
 
 exports.markExamAtteance = async (req, res) => {
   try {
-    const examhallData = req.examhall;
-    const { date, absent } = req.body;
+  
+    const { date, absent, present } = req.body;
 
-    await SeatArragement.updateMany(
-      { examhall: examhallData._id, date: date },
-      { isAttenadce: true }
-    );
-    if (absent) {
-      for (let i = 0; i < absent.length; i++) {
-        await SeatArragement.updateOne(
-          { student: absent[i], date: date },
-          { isAttenadce: false }
-        );
-      }
-    }
+    const examAttandance = await absentMarking(absent, date, present);
 
-    return res.json({ msg: "Exam Update" });
+    return res.json({ msg: examAttandance });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       error: "Error occured",
     });

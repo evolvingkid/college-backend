@@ -11,7 +11,7 @@ const {
   userByID,
 } = require("../controller/user/users");
 const { studentList } = require("../controller/user/student");
-const { listTeachers } = require("../controller/user/teachers");
+const { listTeachers, chnageRollNumberToRandom } = require("../controller/user/teachers");
 // authirisation Data
 const { jwtAuthVerification } = require("../controller/auth");
 const { passwordvalidation } = require("../validation/auth");
@@ -52,6 +52,7 @@ router.patch(
   fileUpload.fields(userFileUploads),
   userEdit
 );
+
 
 router.param("userByID", userByID);
 

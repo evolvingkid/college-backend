@@ -1,5 +1,7 @@
 const User = require("../../model/user");
 const mongoose = require("mongoose");
+const Student = require("../../model/student"); 
+const { randomNumber} = require("../../config/customFunction")
 
 exports.listTeachers = async (req, res) => {
   try {
