@@ -8,9 +8,19 @@ exports.seatArragemnetList = async (req, res) => {
 
   const seatArrangmentData = await SeatArrangemnet.find(query)
     .populate("examhall")
-    .populate("student")
+    .populate({
+      path: "student",
+      populate: {
+        path: "student",
+      }
+    })
     .populate("batch")
-    .populate("course");
+    .populate({
+      path  : "course",
+      populate : {
+        path : "program"
+      }
+    });
 
   return res.json({ data: seatArrangmentData });
 };
@@ -100,7 +110,7 @@ exports.seatArragemnet = async (req, res) => {
 
       usedHall[currentExamhall].splitStergnth = parseInt(
         examHallData[currentExamhall].usedCount /
-          usedHall[currentExamhall].splitLegth
+        usedHall[currentExamhall].splitLegth
       );
       currentExamhall++;
     }
