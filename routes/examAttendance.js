@@ -20,7 +20,7 @@ router.post(
 );
 
 router.get(
-  "/:examHallID/course/:courseID",
+  "/",
   jwtAuthVerification,
   examManagePermission,
   attendanceMark
