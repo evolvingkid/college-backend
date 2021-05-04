@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const StudentModel = new mongoose.Schema({
-    fatherName: { type: String},
+    fatherName: { type: String },
     motherName: { type: String },
     income: { type: Number },
     caste: { type: String },
@@ -12,9 +12,21 @@ const StudentModel = new mongoose.Schema({
         enum: ['General', 'OBC', 'SC/ST'],
         default: 'General',
     },
-    rollno: { type: Number, required: true },
-    collegeRollno: { type: Number, required: true },
-    universityNumber: { type: Number, required: true },
+    rollno: {
+        type: Number,
+        required: true,
+        unique: true
+    },
+    collegeRollno: {
+        type: Number,
+        required: true,
+        unique: true
+    },
+    universityNumber: {
+        type: Number,
+        required: true,
+        unique: true
+    },
     fatherOccupation: { type: String },
     motheroccupation: { type: String },
     addmissionType: {
