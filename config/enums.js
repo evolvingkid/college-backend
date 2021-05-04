@@ -20,4 +20,6 @@ exports.userPermissionEnums = {
   eventManage: "courseManage",
   websiteMange: "websiteManage",
   examManage: "examManage",
+  placementRead : "placementRead",
+  placementManage : "placementManage"
 };
