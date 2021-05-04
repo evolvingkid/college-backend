@@ -29,30 +29,16 @@ const EventsModel = new mongoose.Schema({
     },
     isPrivate: {
         type: Boolean,
-        default : false
+        default: false
     },
     image: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "FileModel"
     },
-    orginizers: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "user"
-        }
-    ],
-    participants: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "user"
-        }
-    ],
-    exteranlPartcipants: [
-        {
-            name: { type: String },
-            contact: { type: String }
-        }
-    ]
+    participats: [{
+        title: { type: String },
+        num: { type: Number }
+    }]
 });
 
 EventsModel.plugin(uniqueValidator, { message: '{PATH} already exists!' });
