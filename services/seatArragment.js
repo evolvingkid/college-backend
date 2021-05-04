@@ -13,7 +13,12 @@ exports.seatArragmentprintOut = async (query) => {
         let lessArrange = {};
         const seatArragment = await SeatArrangemnet
             .find({ examhall: examHallData[index]._id, date: query.date })
-            .populate("course").populate({
+            .populate({
+                path : "course",
+                populate : {
+                    path : "program"
+                }
+            }).populate({
                 path: "student", populate: {
                     path: "student"
                 }
@@ -25,9 +30,9 @@ exports.seatArragmentprintOut = async (query) => {
 
         for (let j = 0; j < seatArragment.length; j++) {
 
-            if (!isExistsInList('course', seatArragment[j].course.courseid, lessArrange['course'])) {
+            if (!isExistsInList('course', seatArragment[j].course.program.name, lessArrange['course'])) {
                 let courseArange = {
-                    course: seatArragment[j].course.courseid,
+                    course: seatArragment[j].course.program.name,
                     student: [seatArragment[j].student.student.rollno]
                 }
 
@@ -35,7 +40,7 @@ exports.seatArragmentprintOut = async (query) => {
                 continue;
             }
 
-            let listIndex = whereIndexInList('course', seatArragment[j].course.courseid, lessArrange['course']);
+            let listIndex = whereIndexInList('course', seatArragment[j].course.program.name, lessArrange['course']);
 
 
             if (listIndex == null) {
