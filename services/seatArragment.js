@@ -24,9 +24,12 @@ exports.seatArragmentprintOut = async (query) => {
                 }
             });
 
-        lessArrange['examHall'] = examHallData[index].name;
+            if (!seatArragment.length) {
+             continue;
+            }
 
-        lessArrange['course'] = [];
+            lessArrange['examHall'] = examHallData[index].name;
+            lessArrange['course'] = [];
 
         for (let j = 0; j < seatArragment.length; j++) {
 
