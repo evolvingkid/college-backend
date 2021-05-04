@@ -2,27 +2,14 @@ const Course = require("../model/course");
 const User = require("../model/user");
 const Examhall = require("../model/examhall");
 const SeatArrangemnet = require("../model/seatArragement");
+const { seatArragmentprintOut } = require("../services/seatArragment")
 
 exports.seatArragemnetList = async (req, res) => {
   const query = req.query;
 
-  const seatArrangmentData = await SeatArrangemnet.find(query)
-    .populate("examhall")
-    .populate({
-      path: "student",
-      populate: {
-        path: "student",
-      }
-    })
-    .populate("batch")
-    .populate({
-      path  : "course",
-      populate : {
-        path : "program"
-      }
-    });
+  const arrangeData = await seatArragmentprintOut(query);
 
-  return res.json({ data: seatArrangmentData });
+  return res.json({ data: arrangeData });
 };
 
 exports.seatArragemnet = async (req, res) => {
