@@ -1,4 +1,4 @@
-const Program = require("../model/course");
+const Program = require("../model/program");
 const Course = require("../model/course");
 
 exports.createProgramWithCourse = async (body) => {
@@ -7,14 +7,15 @@ exports.createProgramWithCourse = async (body) => {
     courseData[index] = Course(body.course[index]);
   }
   body.course = courseData;
-  const programData = Program(body);
+  let programData = Program(body);
 
   for (let index = 0; index < body.course.length; index++) {
     courseData[index].program = programData._id;
   }
   body.course = courseData;
+  programData = Program(body);
 
-  await Promise.all([Course.insertMany(body.course), programData.save()]);
+ await Promise.all([Course.insertMany(body.course), programData.save()]);
 
   return programData;
 };
