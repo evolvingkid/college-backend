@@ -1,7 +1,7 @@
 const Program = require("../model/program");
 const Course = require("../model/course");
 
-const { createProgramWithCourse } = require("../services/departmentServices");
+const { createProgramWithCourse } = require("../services/programServices");
 
 exports.createProgram = async (req, res) => {
   try {
@@ -24,7 +24,7 @@ exports.createProgram = async (req, res) => {
       data: programData,
     });
   } catch (error) {
-    console.log(error);
+   console.log(error);
 
     if (error.errors.name) {
       return res.status(403).json({

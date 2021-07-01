@@ -40,14 +40,20 @@ const StudentModel = new mongoose.Schema({
         default: false,
     },
     achivement: [],
-    placement: [],
+    placement: [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "placementModel"
+    }],
     club: [],
     education: [{
         title: { type: String },
         file: { type: String },
         decription: { type: String }
     }],
-    program: [{ type: mongoose.Schema.Types.ObjectId }],
+    program: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "PrograModel"
+    }],
 }, {
     timestamps: true
 });
