@@ -21,7 +21,6 @@ router.post("/signin", signinValidation, signin);
 router.post(
   "/bulkstudentcreation",
   jwtAuthVerification,
-  userManagePermission,
   bulkuserCreation,
   bulkStudentCreation
 );
