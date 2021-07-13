@@ -37,6 +37,8 @@ exports.attendanceMark = async (req, res) => {
       find({ date: date, examhall: examHallData[index] })
       .populate("course");
 
+      console.log(seatArragmentData);
+
     let courseID = [];
 
     for (let j = 0; j < seatArragmentData.length; j++) {

@@ -12,8 +12,6 @@ const { fileUpload } = require("../config/fileUpload");
 
 router.post(
   "/signup",
-  jwtAuthVerification,
-  userManagePermission,
   signupvalidation,
   signup
 );

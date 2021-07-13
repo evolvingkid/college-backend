@@ -8,9 +8,12 @@ exports.seatArragmentprintOut = async (query) => {
 
     let arrangeData = [];
 
+    console.log(`exam ${examHallData}`);
+
     for (let index = 0; index < examHallData.length; index++) {
 
         let lessArrange = {};
+        console.log(examHallData[index]._id);
         const seatArragment = await SeatArrangemnet
             .find({ examhall: examHallData[index]._id, date: query.date })
             .populate({
@@ -23,6 +26,8 @@ exports.seatArragmentprintOut = async (query) => {
                     path: "student"
                 }
             });
+
+            console.log(seatArragment);
 
             if (!seatArragment.length) {
              continue;

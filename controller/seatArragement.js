@@ -16,8 +16,12 @@ exports.seatArragemnet = async (req, res) => {
   const { date } = req.body;
   const examdate = new Date(date);
 
+  console.log(date);
+
   // * acess course
   const courseData = await courseWithDate(examdate);
+
+  console.log(`adasd${courseData}`);
 
   if (!courseData.length) {
     return res.status(400).json({ msg: "Their is no exam in this date" });
@@ -139,6 +143,8 @@ async function studentsWithBatch(batchID) {
 }
 
 async function courseWithDate(examdate) {
+  console.log(examdate);
+
   const courseData = await Course.aggregate([
     {
       $lookup: {
